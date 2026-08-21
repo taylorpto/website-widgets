@@ -5,12 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Taylor Annual Fund — Progress</title>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     SETUP: paste your published Google Sheet CSV URL below.
-     Everything else updates itself. See SETUP.md for how to get it.
-     ═══════════════════════════════════════════════════════════════ -->
+<!-- Shared brand styles. Colours and fonts live in styles.css. -->
+<link rel="stylesheet" href="https://taylorpto.github.io/website-widgets/styles.css">
+
+<!-- ═════════════════════════════════════════════════════════════
+     SETUP: the published Google Sheet CSV feeding this widget.
+     To change the numbers, edit the Thermometer tab — not this file.
+     ═════════════════════════════════════════════════════════════ -->
 <script>
-  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOrVVITh0ruafg711MLhJiyZP0PdRHRadixmDCWF_bmVFy7V41dKeZzg5AhL8-2k8n7BdBTL306ON/pub?gid=0&single=true&output=csv";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOrVVITh0ruafg711MLhJiyZP0PdRHRadixmDCWF_bmVFy7V41dKeZzg5AhL8-2k8n7BdBTL306ON/pub?gid=0&single=true&output=csv";
 
   // Shown only if the sheet can't be reached. Keep roughly current
   // so a network hiccup never renders an empty or broken widget.
@@ -18,38 +21,11 @@
 </script>
 
 <style>
-  :root{
-    --navy:#1B3A5C; --gold:#E0A32E; --body:#3F4A55;
-    --muted:#6B7683; --tint:#F4F7FA; --rule:#DDE3E9;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:transparent;}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Helvetica,sans-serif;
-    color:var(--body); -webkit-font-smoothing:antialiased;
-  }
-  .card{
-    max-width:640px; margin:0 auto; background:#fff;
-    border:1px solid var(--rule); border-radius:10px; overflow:hidden;
-  }
-  .head{background:var(--navy); padding:18px 24px 16px;}
-  .eyebrow{
-    margin:0; font-size:10px; letter-spacing:2.2px; text-transform:uppercase;
-    color:var(--gold); font-weight:700;
-  }
-  .title{
-    margin:5px 0 0; font-family:Georgia,"Times New Roman",serif;
-    font-size:20px; line-height:26px; color:#fff; font-weight:400;
-  }
-  .band{height:4px; background:var(--gold);}
-  .body{padding:26px 24px 22px;}
-
-  .figures{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
-  .raised{
-    font-family:Georgia,"Times New Roman",serif; font-size:44px;
-    line-height:1; color:var(--navy);
-  }
-  .of{font-size:15px; color:var(--muted);}
+  /* Only rules unique to this widget live here. Anything reusable
+     belongs in styles.css so other pages inherit it. */
+  .figures{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .raised{ font-family:var(--display); font-size:44px; line-height:1; color:var(--navy); }
+  .of{ font-size:15px; color:var(--muted); }
 
   .track{
     position:relative; height:26px; background:var(--tint);
@@ -60,52 +36,35 @@
     background:linear-gradient(90deg,var(--navy),#2C5F91);
     transition:width 1100ms cubic-bezier(.22,.61,.36,1);
   }
-  .fill.met{background:linear-gradient(90deg,var(--gold),#F0BC5A);}
+  .fill.met{ background:linear-gradient(90deg,var(--gold),#F0BC5A); }
   .pct{
     position:absolute; inset:0; display:flex; align-items:center;
     justify-content:center; font-size:12px; font-weight:700;
     color:var(--navy); letter-spacing:.4px;
   }
-  .pct.on-fill{color:#fff;}
+  .pct.on-fill{ color:var(--white); }
 
   .meta{
     display:flex; justify-content:space-between; gap:12px;
     font-size:13px; color:var(--muted); flex-wrap:wrap;
   }
-  .meta strong{color:var(--navy);}
+  .meta strong{ color:var(--navy); }
 
-  .cta{
-    display:block; margin:20px 0 0; padding:14px;
-    background:var(--gold); color:var(--navy); text-align:center;
-    font-weight:700; font-size:15px; text-decoration:none; border-radius:6px;
-  }
-  .cta:hover{filter:brightness(.96);}
-  .cta:focus-visible{outline:3px solid var(--navy); outline-offset:2px;}
-
-  .foot{
-    margin:14px 0 0; font-size:11px; color:#9AA4B0; text-align:center;
-  }
+  .foot{ margin:14px 0 0; font-size:11px; color:var(--faint); text-align:center; }
   .goal-met{
     margin:14px 0 0; padding:10px; background:#FFF8E8;
     border-left:3px solid var(--gold); font-size:14px; color:var(--navy);
   }
-  @media (max-width:420px){
-    .raised{font-size:36px;}
-    .body{padding:22px 18px 18px;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .fill{transition:none;}
-  }
+  @media (max-width:420px){ .raised{ font-size:36px; } }
 </style>
 </head>
 <body>
 
-<div class="card">
-  <div class="head">
+<div class="panel">
+  <div class="hero compact">
     <p class="eyebrow">Charles G. Taylor Elementary</p>
-    <p class="title">The Taylor Annual Fund</p>
+    <p class="h1">The Taylor Annual Fund</p>
   </div>
-  <div class="band"></div>
 
   <div class="body">
     <div class="figures">
@@ -127,12 +86,12 @@
 
     <div id="met" class="goal-met" hidden></div>
 
-    <a class="cta" id="cta"
+    <a class="btn block" id="cta" style="margin-top:20px;"
        href="https://www.paypal.com/donate/?hosted_button_id=5XXRGA2TRTQWC"
        target="_blank" rel="noopener">Give to the Annual Fund</a>
 
-    <p class="foot" id="foot">Venmo @TaylorElementary-PTO · Checks to the school office</p>
-    <p class="foot" id="stale" hidden style="color:#B0762A;">Totals may be a few days behind.</p>
+    <p class="foot" id="foot">Venmo @TaylorElementary-PTO &middot; Checks to the school office</p>
+    <p class="foot" id="stale" hidden style="color:var(--gold-deep);">Totals may be a few days behind.</p>
   </div>
 </div>
 
