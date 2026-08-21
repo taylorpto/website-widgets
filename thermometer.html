@@ -6,6 +6,7 @@
 <title>Taylor Annual Fund — Progress</title>
 
 <!-- Shared brand styles. Colours and fonts live in styles.css. -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://taylorpto.github.io/website-widgets/styles.css">
 
 <!-- ═════════════════════════════════════════════════════════════
@@ -24,19 +25,20 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOrVVITh0ruaf
   /* Only rules unique to this widget live here. Anything reusable
      belongs in styles.css so other pages inherit it. */
   .figures{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
-  .raised{ font-family:var(--display); font-size:44px; line-height:1; color:var(--navy); }
-  .of{ font-size:15px; color:var(--muted); }
+  .raised{ font-size:46px; font-weight:900; line-height:1;
+           letter-spacing:-1.5px; color:var(--navy); }
+  .of{ font-size:15px; font-weight:300; color:var(--muted); }
 
   .track{
     position:relative; height:26px; background:var(--tint);
-    border-radius:13px; margin:18px 0 10px; overflow:hidden;
+    border-radius:13px; margin:20px 0 12px; overflow:hidden;
   }
   .fill{
     height:100%; width:0; border-radius:13px;
-    background:linear-gradient(90deg,var(--navy),#2C5F91);
+    background:linear-gradient(90deg,var(--navy),#2E5490);
     transition:width 1100ms cubic-bezier(.22,.61,.36,1);
   }
-  .fill.met{ background:linear-gradient(90deg,var(--gold),#F0BC5A); }
+  .fill.met{ background:linear-gradient(90deg,var(--gold),#DCC584); }
   .pct{
     position:absolute; inset:0; display:flex; align-items:center;
     justify-content:center; font-size:12px; font-weight:700;
@@ -45,17 +47,18 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOrVVITh0ruaf
   .pct.on-fill{ color:var(--white); }
 
   .meta{
+    font-weight:300;
     display:flex; justify-content:space-between; gap:12px;
     font-size:13px; color:var(--muted); flex-wrap:wrap;
   }
-  .meta strong{ color:var(--navy); }
+  .meta strong{ color:var(--navy); font-weight:700; }
 
   .foot{ margin:14px 0 0; font-size:11px; color:var(--faint); text-align:center; }
   .goal-met{
-    margin:14px 0 0; padding:10px; background:#FFF8E8;
+    margin:14px 0 0; padding:10px; background:var(--cream);
     border-left:3px solid var(--gold); font-size:14px; color:var(--navy);
   }
-  @media (max-width:420px){ .raised{ font-size:36px; } }
+  @media (max-width:420px){ .raised{ font-size:38px; } }
 </style>
 </head>
 <body>
@@ -86,7 +89,7 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOrVVITh0ruaf
 
     <div id="met" class="goal-met" hidden></div>
 
-    <a class="btn block" id="cta" style="margin-top:20px;"
+    <a class="btn block" id="cta" style="margin-top:22px;"
        href="https://www.paypal.com/donate/?hosted_button_id=5XXRGA2TRTQWC"
        target="_blank" rel="noopener">Give to the Annual Fund</a>
 
