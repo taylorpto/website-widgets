@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taylor Annual Fund — Progress</title>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SETUP: paste your published Google Sheet CSV URL below.
+     Everything else updates itself. See SETUP.md for how to get it.
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTwOrVVITh0ruafg711MLhJiyZP0PdRHRadixmDCWF_bmVFy7V41dKeZzg5AhL8-2k8n7BdBTL306ON/pub?gid=0&single=true&output=csv";
+
+  // Shown only if the sheet can't be reached. Keep roughly current
+  // so a network hiccup never renders an empty or broken widget.
+  const FALLBACK = { goal: 8000, raised: 0, donors: 0, deadline: "2026-09-30" };
+</script>
+
+<style>
+  :root{
+    --navy:#1B3A5C; --gold:#E0A32E; --body:#3F4A55;
+    --muted:#6B7683; --tint:#F4F7FA; --rule:#DDE3E9;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:transparent;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,Helvetica,sans-serif;
+    color:var(--body); -webkit-font-smoothing:antialiased;
+  }
+  .card{
+    max-width:640px; margin:0 auto; background:#fff;
+    border:1px solid var(--rule); border-radius:10px; overflow:hidden;
+  }
+  .head{background:var(--navy); padding:18px 24px 16px;}
+  .eyebrow{
+    margin:0; font-size:10px; letter-spacing:2.2px; text-transform:uppercase;
+    color:var(--gold); font-weight:700;
+  }
+  .title{
+    margin:5px 0 0; font-family:Georgia,"Times New Roman",serif;
+    font-size:20px; line-height:26px; color:#fff; font-weight:400;
+  }
+  .band{height:4px; background:var(--gold);}
+  .body{padding:26px 24px 22px;}
+
+  .figures{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .raised{
+    font-family:Georgia,"Times New Roman",serif; font-size:44px;
+    line-height:1; color:var(--navy);
+  }
+  .of{font-size:15px; color:var(--muted);}
+
+  .track{
+    position:relative; height:26px; background:var(--tint);
+    border-radius:13px; margin:18px 0 10px; overflow:hidden;
+  }
+  .fill{
+    height:100%; width:0; border-radius:13px;
+    background:linear-gradient(90deg,var(--navy),#2C5F91);
+    transition:width 1100ms cubic-bezier(.22,.61,.36,1);
+  }
+  .fill.met{background:linear-gradient(90deg,var(--gold),#F0BC5A);}
+  .pct{
+    position:absolute; inset:0; display:flex; align-items:center;
+    justify-content:center; font-size:12px; font-weight:700;
+    color:var(--navy); letter-spacing:.4px;
+  }
+  .pct.on-fill{color:#fff;}
+
+  .meta{
+    display:flex; justify-content:space-between; gap:12px;
+    font-size:13px; color:var(--muted); flex-wrap:wrap;
+  }
+  .meta strong{color:var(--navy);}
+
+  .cta{
+    display:block; margin:20px 0 0; padding:14px;
+    background:var(--gold); color:var(--navy); text-align:center;
+    font-weight:700; font-size:15px; text-decoration:none; border-radius:6px;
+  }
+  .cta:hover{filter:brightness(.96);}
+  .cta:focus-visible{outline:3px solid var(--navy); outline-offset:2px;}
+
+  .foot{
+    margin:14px 0 0; font-size:11px; color:#9AA4B0; text-align:center;
+  }
+  .goal-met{
+    margin:14px 0 0; padding:10px; background:#FFF8E8;
+    border-left:3px solid var(--gold); font-size:14px; color:var(--navy);
+  }
+  @media (max-width:420px){
+    .raised{font-size:36px;}
+    .body{padding:22px 18px 18px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .fill{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="head">
+    <p class="eyebrow">Charles G. Taylor Elementary</p>
+    <p class="title">The Taylor Annual Fund</p>
+  </div>
+  <div class="band"></div>
+
+  <div class="body">
+    <div class="figures">
+      <span class="raised" id="raised">$0</span>
+      <span class="of" id="of">raised of our goal</span>
+    </div>
+
+    <div class="track" role="progressbar" id="bar"
+         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+         aria-label="Progress toward the Taylor Annual Fund goal">
+      <div class="fill" id="fill"></div>
+      <div class="pct" id="pct">0%</div>
+    </div>
+
+    <div class="meta">
+      <span id="donors"></span>
+      <span id="left"></span>
+    </div>
+
+    <div id="met" class="goal-met" hidden></div>
+
+    <a class="cta" id="cta"
+       href="https://www.paypal.com/donate/?hosted_button_id=5XXRGA2TRTQWC"
+       target="_blank" rel="noopener">Give to the Annual Fund</a>
+
+    <p class="foot" id="foot">Venmo @TaylorElementary-PTO · Checks to the school office</p>
+    <p class="foot" id="stale" hidden style="color:#B0762A;">Totals may be a few days behind.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const money = n => "$" + Math.round(n).toLocaleString("en-US");
+
+  // Minimal CSV parse: expects a two-column key,value sheet.
+  function parseCSV(text){
+    const out = {};
+    text.trim().split(/\r?\n/).forEach(line => {
+      const m = line.match(/^\s*"?([^",]+)"?\s*,\s*"?([^"]*?)"?\s*$/);
+      if (m) out[m[1].trim().toLowerCase()] = m[2].trim();
+    });
+    return out;
+  }
+
+  function daysUntil(iso){
+    if(!iso) return null;
+    const end = new Date(iso + "T23:59:59");
+    if (isNaN(end)) return null;
+    return Math.ceil((end - new Date()) / 86400000);
+  }
+
+  function render(d){
+    const goal   = Number(String(d.goal   ?? FALLBACK.goal  ).replace(/[^0-9.]/g,"")) || 0;
+    const raised = Number(String(d.raised ?? FALLBACK.raised).replace(/[^0-9.]/g,"")) || 0;
+    const donors = Number(String(d.donors ?? FALLBACK.donors).replace(/[^0-9.]/g,"")) || 0;
+    const deadline = d.deadline || FALLBACK.deadline;
+
+    const rawPct = goal > 0 ? (raised / goal) * 100 : 0;
+    const pct = Math.max(0, Math.min(100, rawPct));
+
+    $("raised").textContent = money(raised);
+    $("of").textContent = "raised of our " + money(goal) + " goal";
+    $("pct").textContent = Math.round(rawPct) + "%";
+    $("bar").setAttribute("aria-valuenow", Math.round(pct));
+
+    if (donors > 0){
+      $("donors").innerHTML = "<strong>" + donors + "</strong> "
+        + (donors === 1 ? "family has" : "families have") + " given";
+    }
+
+    const left = daysUntil(deadline);
+    if (left !== null){
+      if (left > 1)       $("left").innerHTML = "<strong>" + left + "</strong> days left";
+      else if (left === 1) $("left").innerHTML = "<strong>1</strong> day left";
+      else if (left === 0) $("left").innerHTML = "<strong>Last day</strong>";
+      else {
+        $("left").textContent = "Now closed";
+        $("cta").hidden = true;
+        $("foot").textContent = "Thank you to everyone who gave.";
+      }
+    }
+
+    if (rawPct >= 100){
+      $("fill").classList.add("met");
+      $("met").hidden = false;
+      $("met").textContent = "Goal met — thank you, Taylor families. Every dollar past our goal goes straight back to the classroom.";
+    }
+
+    // Paint after a tick so the width transition actually animates.
+    requestAnimationFrame(() => {
+      $("fill").style.width = pct + "%";
+      if (pct > 55) $("pct").classList.add("on-fill");
+    });
+  }
+
+  // Google's published-CSV endpoint normally allows cross-origin reads, but if
+  // it is ever blocked we fall back to the gviz JSONP endpoint, which loads via
+  // a <script> tag and is not subject to CORS at all. If both fail we show the
+  // hardcoded numbers AND flag them as possibly stale, rather than silently
+  // rendering wrong totals.
+  const SHEET_ID = "1A7XQHvH3Ji4r5vnIUMkqkGlYEf-zTOjccSsqG3PVI_A";
+  const GID = "0";
+
+  function viaJSONP(){
+    return new Promise((resolve, reject) => {
+      const cb = "__ptoCb" + Date.now();
+      const el = document.createElement("script");
+      const timer = setTimeout(() => { cleanup(); reject(new Error("timeout")); }, 8000);
+      function cleanup(){ clearTimeout(timer); delete window[cb]; el.remove(); }
+      window[cb] = res => {
+        cleanup();
+        try {
+          const out = {};
+          (res.table.rows || []).forEach(r => {
+            const k = r.c[0] && r.c[0].v, v = r.c[1] && (r.c[1].f ?? r.c[1].v);
+            if (k) out[String(k).trim().toLowerCase()] = v == null ? "" : String(v).trim();
+          });
+          resolve(out);
+        } catch(e){ reject(e); }
+      };
+      el.onerror = () => { cleanup(); reject(new Error("script error")); };
+      el.src = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+               "/gviz/tq?tqx=out:json;responseHandler:" + cb + "&gid=" + GID +
+               "&_=" + Date.now();
+      document.head.appendChild(el);
+    });
+  }
+
+  if (!CSV_URL || CSV_URL.indexOf("PASTE_YOUR") === 0){
+    render(FALLBACK);
+    document.getElementById("stale").hidden = false;
+    return;
+  }
+
+  fetch(CSV_URL + (CSV_URL.includes("?") ? "&" : "?") + "_=" + Date.now())
+    .then(r => { if(!r.ok) throw new Error(r.status); return r.text(); })
+    .then(t => {
+      const d = parseCSV(t);
+      if (d.goal === undefined && d.raised === undefined) throw new Error("empty");
+      render(d);
+    })
+    .catch(() => viaJSONP()
+      .then(d => render(d))
+      .catch(() => {                      // both routes failed
+        render(FALLBACK);
+        document.getElementById("stale").hidden = false;
+      })
+    );
+})();
+</script>
+
+</body>
+</html>
