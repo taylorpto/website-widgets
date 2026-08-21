@@ -47,16 +47,24 @@ the donate button on its own and switches to a thank-you message.
 Open `styles.css`. At the top is a `:root` block:
 
 ```css
---navy:  #1B3A5C;
---gold:  #E0A32E;
+--navy:  #1B3A6B;
+--gold:  #C9A84C;
 ```
 
 Change a value there and **every page updates at once**. That's the whole point
 of this setup — don't copy colours into individual files, or they'll drift apart
 the first time someone updates one and forgets the others.
 
-These colours match the Annual Fund emails and the printed handout, so changing
-them here means the website no longer matches the print material.
+These values were taken from the live Fundraising page, and the Annual Fund
+emails and printed handout were rebuilt to match them. Change them here and the
+website will no longer match the print material until that is rebuilt too.
+
+The site runs on **Roboto** — light (300) body copy, heavy (700/900) headings.
+Any page using this stylesheet must load the font itself:
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+```
 
 ---
 
