@@ -207,3 +207,33 @@ a:hover{ text-decoration:underline; }
 @media (prefers-reduced-motion: reduce){
   *{ transition:none !important; animation:none !important; }
 }
+
+
+/* ============================================================
+   SEASONAL THEME — Trunk or Treat
+   ------------------------------------------------------------
+   Add class="theme-trunk-or-treat" to <body> on the event page.
+   This ONLY re-points the existing colour tokens; no layout or
+   component CSS is duplicated. Every block (hero, cards, callout,
+   btn, pto-foot) picks these up automatically.
+
+   Keep seasonal palettes HERE, not inside individual page files —
+   same reason the brand colours live in :root.
+   ============================================================ */
+
+body.theme-trunk-or-treat{
+  --navy:        #2E1065;   /* deep purple replaces navy      */
+  --navy-deep:   #1B0A3F;
+  --gold:        #FF7A1A;   /* pumpkin orange replaces gold   */
+  --gold-deep:   #C2410C;   /* orange on light bg, contrast   */
+
+  --ink:         #4B3F63;   /* warmer body copy               */
+  --muted:       #4B3F63;
+  --faint:       #8B7FA6;
+  --cream:       #FDF6EE;   /* warm tinted section            */
+  --tint:        #FDF6EE;
+  --rule:        #EADFD1;
+}
+
+/* Card icons read a touch larger on the event page */
+body.theme-trunk-or-treat .card .icon{ font-size: 30px; }
