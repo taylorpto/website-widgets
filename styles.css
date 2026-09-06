@@ -235,5 +235,14 @@ body.theme-trunk-or-treat{
   --rule:        #EADFD1;
 }
 
+/* Mascot art in the hero. Sized in rem so it scales with the page and
+   never pushes content past a fixed-height Google Sites embed. */
+body.theme-trunk-or-treat .hero .tot-mascot{
+  display:block; margin:0 auto 14px; width:150px; max-width:42%; height:auto;
+}
+@media (max-width:520px){
+  body.theme-trunk-or-treat .hero .tot-mascot{ width:110px; }
+}
+
 /* Card icons read a touch larger on the event page */
 body.theme-trunk-or-treat .card .icon{ font-size: 30px; }
