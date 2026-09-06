@@ -19,6 +19,7 @@ Hosted free on GitHub Pages at
 | `styles.css` | All colours, fonts, and shared blocks. **Edit here to change the look.** |
 | `thermometer.html` | Annual Fund progress bar. Reads live totals from a Google Sheet. |
 | `page-template.html` | Blank starting point for a new page. Copy it, rename it, replace the words. |
+| `trunk-or-treat.html` | Trunk or Treat event page. **Event dates live here** — see warning below. |
 
 ---
 
@@ -79,6 +80,20 @@ Any page using this stylesheet must load the font itself:
 
 Available blocks, all shown in the template: `hero`, `section` (plain or
 `tinted`), `cards`, `ways`, `callout`, `btn`, `pto-foot`.
+
+---
+
+## Event dates
+
+`trunk-or-treat.html` has the event date typed into it. That is a copy, and
+copies drift — this page was live for weeks saying "Saturday, October 19" when
+October 19, 2026 is a **Monday**.
+
+Before changing any date here, check the **PTO Master Calendar** (Google
+Calendar, owned by ben@taylorpto.org). It is the source of truth. Then update
+this file to match, and check the flyer image says the same thing.
+
+Never type a weekday name you have not verified against a calendar.
 
 ---
 
