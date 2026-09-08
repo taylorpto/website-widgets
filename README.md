@@ -18,6 +18,7 @@ Hosted free on GitHub Pages at
 |---|---|
 | `styles.css` | All colours, fonts, and shared blocks. **Edit here to change the look.** |
 | `thermometer.html` | Annual Fund progress bar. Reads live totals from a Google Sheet. |
+| `home.html` | The whole homepage — board roster, programs, social. One embed, not three. |
 | `page-template.html` | Blank starting point for a new page. Copy it, rename it, replace the words. |
 | `trunk-or-treat.html` | Trunk or Treat event page. **Event dates live here** — see warning below. |
 
@@ -83,6 +84,21 @@ Available blocks, all shown in the template: `hero`, `section` (plain or
 
 ---
 
+## The donation button
+
+Every PayPal link must use:
+
+```
+https://www.paypal.com/donate/?hosted_button_id=MYPCRJ76FN38C
+```
+
+An older button, `5XXRGA2TRTQWC`, is retired. It is still pasted into parts of
+the live Google Sites **Fundraising** page and into some Drive documents. If you
+find it anywhere, replace it — do not copy a donate link from an old file
+without checking the ID first.
+
+---
+
 ## Event dates
 
 `trunk-or-treat.html` has the event date typed into it. That is a copy, and
@@ -104,7 +120,19 @@ does not look inside embedded frames. Keep meeting dates, the contact address,
 and how to give in ordinary Sites text somewhere too.
 
 **Embeds don't resize themselves.** You set a fixed height in Sites. If content
-grows past it, it gets cut off.
+grows past it, it gets cut off. Size it while previewing on a *phone* — that's
+the tallest case. Desktop will have a little slack at the bottom; that beats
+clipping.
+
+**Every link in an embed needs `target="_blank"`.** Google Sites sandboxes these
+frames without `allow-top-navigation`, so a plain link tries to open inside the
+little frame, Sites refuses to be framed, and the click silently does nothing.
+No error, no 404 — it just looks broken. This cost us a working room-parent
+signup link. Applies to `mailto:` too.
+
+**One embed per page beats three.** The homepage used to be three separate
+blocks; on a phone that meant three fixed heights and three seams. `home.html`
+is one file for exactly this reason.
 
 **Test on a phone.** Most families read on one. The stylesheet handles narrow
 screens, but check after any layout change.
