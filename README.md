@@ -19,6 +19,7 @@ Hosted free on GitHub Pages at
 | `styles.css` | All colours, fonts, and shared blocks. **Edit here to change the look.** |
 | `thermometer.html` | Annual Fund progress bar. Reads live totals from a Google Sheet. |
 | `home.html` | The whole homepage — board roster, programs, social. One embed, not three. |
+| `icare.html` | The iCare page — origin story, program, volunteer quotes, ways to help. |
 | `page-template.html` | Blank starting point for a new page. Copy it, rename it, replace the words. |
 | `trunk-or-treat.html` | Trunk or Treat event page. **Event dates live here** — see warning below. |
 
