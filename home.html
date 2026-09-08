@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taylor PTO — Home</title>
+
+<!-- Shared stylesheet. Do not copy CSS into this file; edit styles.css
+     instead so every page stays in sync. -->
+<link rel="stylesheet" href="https://taylorpto.github.io/website-widgets/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+  /* ---- page-specific only: board roster + social row ----
+     Everything else uses the shared component classes. */
+
+  /* Board cards: name and email need tighter rhythm than a
+     standard content card, and the email must not overflow
+     a narrow phone column. */
+  .board .card{ padding:18px 16px; }
+  .board .role{
+    font-size:11px; font-weight:600; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--gold-deep);
+    margin:0 0 6px;
+  }
+  .board .name{
+    font-size:15px; font-weight:700; color:var(--navy);
+    line-height:1.4; margin:0 0 6px;
+  }
+  .board .card a{
+    font-size:13px; font-weight:400; word-break:break-word;
+  }
+
+  /* Program cards get a trailing link, so give the text room
+     and pin the link to a consistent baseline. */
+  .programs .card{ display:flex; flex-direction:column; }
+  .programs .card p{ flex:1 1 auto; margin-bottom:12px; }
+  .programs .card .go{ font-size:13px; font-weight:600; }
+
+  /* Social row: wraps to two-up on phones instead of forcing
+     a horizontal scroll. */
+  .social{
+    display:flex; flex-wrap:wrap; gap:10px;
+    justify-content:center; margin:24px 0 0; padding:0;
+    list-style:none;
+  }
+  .social li{ flex:0 1 auto; }
+  .social a{
+    display:block; padding:11px 20px;
+    border:1px solid var(--rule); border-radius:var(--radius-btn);
+    background:var(--white); font-size:14px; font-weight:600;
+  }
+  .social a:hover{ text-decoration:none; border-color:var(--gold); }
+  .social a.give{
+    background:var(--gold); color:var(--navy-deep); border-color:var(--gold);
+  }
+
+  @media (max-width:600px){
+    .social{ gap:8px; }
+    .social a{ padding:10px 16px; font-size:13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ 1 · LEADERSHIP ══════════════════════════════════════ -->
+<div class="section tinted board">
+  <div class="wrap">
+    <p class="eyebrow on-light">Leadership</p>
+    <h2>Our board members are Taylor parents who volunteer their time to make this community thrive.</h2>
+    <div class="cards">
+
+      <div class="card">
+        <p class="role">Co-Presidents</p>
+        <p class="name">Kathryn Rattigan<br>&amp; Jodi Congdon</p>
+        <a href="mailto:president@taylorpto.org">president@taylorpto.org</a>
+      </div>
+
+      <div class="card">
+        <p class="role">Vice President</p>
+        <p class="name">Benjamin Martin</p>
+        <a href="mailto:vp@taylorpto.org">vp@taylorpto.org</a>
+      </div>
+
+      <div class="card">
+        <p class="role">Treasurer</p>
+        <p class="name">Frankie Bonarrigo</p>
+        <a href="mailto:treasurer@taylorpto.org">treasurer@taylorpto.org</a>
+      </div>
+
+      <div class="card">
+        <p class="role">Co-Secretaries</p>
+        <p class="name">Heather Finn<br>&amp; Kimberly Burt</p>
+        <a href="mailto:secretary@taylorpto.org">secretary@taylorpto.org</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ 2 · PROGRAMS ════════════════════════════════════════ -->
+<div class="section programs">
+  <div class="wrap">
+    <p class="eyebrow on-light">What we do</p>
+    <h2>Programs &amp; initiatives</h2>
+    <p class="lead">From fundraising to reading programs, here's how the Taylor PTO makes a difference.</p>
+
+    <div class="cards">
+
+      <div class="card">
+        <div class="icon">💛</div>
+        <h3>Fundraising</h3>
+        <p>Our fundraising efforts power everything the PTO does. Every dollar goes directly back to Taylor students and staff.</p>
+        <a class="go" href="https://www.taylorpto.org/fundraising">Learn more →</a>
+      </div>
+
+      <div class="card">
+        <div class="icon">📖</div>
+        <h3>iCare</h3>
+        <p>iCare uses storytime to build empathy and inclusion — giving every student a safe space to celebrate differences.</p>
+        <a class="go" href="https://www.taylorpto.org/icare">Learn more →</a>
+      </div>
+
+      <div class="card">
+        <div class="icon">🤝</div>
+        <h3>Volunteer</h3>
+        <p>Every PTO program runs on parent volunteers. There's a role that fits your schedule — big or small.</p>
+        <a class="go" href="mailto:board@taylorpto.org">Get in touch →</a>
+      </div>
+
+      <!-- FIXED: was /room-parent-volunteers, which 404s.
+           Correct slug is /room-parents. -->
+      <div class="card">
+        <div class="icon">🙋‍♀️</div>
+        <h3>Room Parents</h3>
+        <p>Room parents help teachers coordinate classroom needs and keep families connected all year long.</p>
+        <a class="go" href="https://www.taylorpto.org/room-parents">Sign up →</a>
+      </div>
+
+      <div class="card">
+        <div class="icon">📖</div>
+        <h3>Friendship Book</h3>
+        <p>Connect with classmates for playdates, carpools, and more. Fill it out for each of your students.</p>
+        <a class="go" href="https://www.taylorpto.org/friendship-book">Sign up →</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ 3 · STAY CONNECTED ══════════════════════════════════ -->
+<div class="section tinted">
+  <div class="wrap" style="text-align:center;">
+    <p class="eyebrow on-light">Stay connected</p>
+    <h2>Join the conversation</h2>
+    <p class="lead" style="max-width:520px;margin-left:auto;margin-right:auto;">
+      Follow us on social, join our WhatsApp group, or make a donation to support Taylor students.</p>
+
+    <ul class="social">
+      <li><a href="https://www.facebook.com/taylorschoolpto" target="_blank" rel="noopener">Facebook</a></li>
+      <li><a href="https://www.instagram.com/thetaylorpto" target="_blank" rel="noopener">Instagram</a></li>
+      <li><a href="https://chat.whatsapp.com/KSj4QMNzrMLF6wHFQiA1so" target="_blank" rel="noopener">WhatsApp</a></li>
+      <li><a href="mailto:board@taylorpto.org">Email us</a></li>
+      <!-- VERIFY: this button ID is carried over unchanged from the live
+           homepage. It does NOT match the ID used in page-template.html
+           (5XXRGA2TRTQWC). Confirm with the Treasurer, then make both match. -->
+      <li><a class="give" href="https://www.paypal.com/donate/?hosted_button_id=MYPCRJ76FN38C" target="_blank" rel="noopener">Donate</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════ -->
+<div class="pto-foot">
+  <p class="small"><strong style="color:var(--navy);">Taylor Elementary PTO</strong></p>
+  <p class="small">Supporting Taylor Elementary School in Foxboro, MA.<br>
+     A volunteer-run nonprofit — 100% of proceeds benefit students.</p>
+  <p class="legal">© 2026 Taylor Elementary PTO · Foxboro, MA · Made with 💛 by Taylor parents</p>
+</div>
+
+</body>
+</html>
