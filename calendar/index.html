@@ -19,6 +19,9 @@
   .card ol{font-size:14px;font-weight:300;line-height:1.7;margin:0 0 14px;padding-left:20px}
   .btn{display:inline-block;background:#1B3A6B;color:#fff;font-weight:700;font-size:15px;padding:13px 22px;border-radius:12px;text-decoration:none}
   .btn.gold{background:#C9A84C;color:#1B3A6B}
+  .btn.small{padding:10px 18px;font-size:13px;margin-bottom:14px}
+  .fallback summary{cursor:pointer;font-size:13px;font-weight:600;color:#1B3A6B;margin-top:2px}
+  .fallback[open] summary{margin-bottom:10px}
   .note{font-size:12px;font-weight:300;line-height:1.6;margin-top:24px}
   a.plain{color:#1B3A6B;font-weight:600;text-decoration:none}
 </style>
@@ -37,14 +40,19 @@
   </div>
   <div class="card">
     <h2>Google Calendar (Android or web)</h2>
-    <p>Open <a class="plain" href="https://calendar.google.com" target="_blank" rel="noopener">calendar.google.com</a> in a browser (works on phone or computer), then:</p>
-    <ol>
-      <li>Click the <strong>+</strong> next to &ldquo;Other calendars&rdquo; in the left sidebar</li>
-      <li>Choose <strong>From URL</strong></li>
-      <li>Paste the address below and click <strong>Add calendar</strong></li>
-    </ol>
-    <p style="word-break:break-all"><a class="plain" href="https://calendar.google.com/calendar/ical/c_b9a6473fec98047ae635bd632c2fb5d2df23ee6a31d746eee3ef71feea461fd5%40group.calendar.google.com/public/basic.ics">https://calendar.google.com/calendar/ical/c_b9a6473fec98047ae635bd632c2fb5d2df23ee6a31d746eee3ef71feea461fd5%40group.calendar.google.com/public/basic.ics</a></p>
-    <p style="margin:0">Once it's added this way, it shows up automatically in the Calendar app on your phone &mdash; no extra step needed.</p>
+    <p>Tap the button and choose <strong>Add</strong>.</p>
+    <a class="btn" href="https://calendar.google.com/calendar/u/0/r?cid=c_b9a6473fec98047ae635bd632c2fb5d2df23ee6a31d746eee3ef71feea461fd5%40group.calendar.google.com">Add to Google Calendar</a>
+    <details class="fallback">
+      <summary>Nothing happen when you tapped it? Do this instead</summary>
+      <p>Open <a class="plain" href="https://calendar.google.com" target="_blank" rel="noopener">calendar.google.com</a> in a browser (phone or computer), then:</p>
+      <ol>
+        <li>Click the <strong>+</strong> next to &ldquo;Other calendars&rdquo; in the left sidebar</li>
+        <li>Choose <strong>From URL</strong></li>
+        <li>Paste the address below and click <strong>Add calendar</strong></li>
+      </ol>
+      <p style="word-break:break-all"><a class="plain" href="https://calendar.google.com/calendar/ical/c_b9a6473fec98047ae635bd632c2fb5d2df23ee6a31d746eee3ef71feea461fd5%40group.calendar.google.com/public/basic.ics">https://calendar.google.com/calendar/ical/c_b9a6473fec98047ae635bd632c2fb5d2df23ee6a31d746eee3ef71feea461fd5%40group.calendar.google.com/public/basic.ics</a></p>
+      <p style="margin:0">Once it's added this way, it shows up automatically in the Calendar app on your phone too &mdash; no extra step needed.</p>
+    </details>
   </div>
   <div class="card">
     <h2>Outlook or anything else</h2>
