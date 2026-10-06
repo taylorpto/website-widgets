@@ -246,3 +246,29 @@ body.theme-trunk-or-treat .hero .tot-mascot{
 
 /* Card icons read a touch larger on the event page */
 body.theme-trunk-or-treat .card .icon{ font-size: 30px; }
+
+
+/* ============================================================
+   SEASONAL THEME — Designer Purse Bingo (fall, matches flyer)
+   Add class="theme-purse-bingo" to <body> on the event page.
+   Re-points colour tokens only; no component CSS duplicated.
+   ============================================================ */
+
+body.theme-purse-bingo{
+  --navy:        #7A2412;   /* deep rust replaces navy        */
+  --navy-deep:   #4A140A;
+  --gold:        #E8862A;   /* autumn orange replaces gold    */
+  --gold-deep:   #A8461A;   /* orange on light bg, contrast   */
+
+  --ink:         #5B4636;   /* warm brown body copy           */
+  --muted:       #5B4636;
+  --faint:       #9C8672;
+  --cream:       #FBF4EA;
+  --tint:        #FBF4EA;
+  --rule:        #EADBC8;
+}
+body.theme-purse-bingo .hero .bingo-mark{
+  font-size:56px; line-height:1; margin:0 auto 14px;
+}
+body.theme-purse-bingo .card .icon{ font-size:30px; }
+body.theme-purse-bingo .card{ text-align:center; }

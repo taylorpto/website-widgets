@@ -22,6 +22,7 @@ Hosted free on GitHub Pages at
 | `icare.html` | The iCare page — origin story, program, volunteer quotes, ways to help. |
 | `page-template.html` | Blank starting point for a new page. Copy it, rename it, replace the words. |
 | `trunk-or-treat.html` | Trunk or Treat event page. **Event dates live here** — see warning below. |
+| `purse-bingo.html` | Designer Purse Bingo event page (Nov 5, 2026). Date and ticket price live here. |
 
 ---
 
