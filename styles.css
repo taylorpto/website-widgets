@@ -272,3 +272,7 @@ body.theme-purse-bingo .hero .bingo-mark{
 }
 body.theme-purse-bingo .card .icon{ font-size:30px; }
 body.theme-purse-bingo .card{ text-align:center; }
+body.theme-purse-bingo .cards{ grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); }
+@media (max-width:600px){
+  body.theme-purse-bingo .card{ padding:16px 12px; }
+}
