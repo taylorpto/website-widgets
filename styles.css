@@ -276,3 +276,19 @@ body.theme-purse-bingo .cards{ grid-template-columns: repeat(auto-fit, minmax(13
 @media (max-width:600px){
   body.theme-purse-bingo .card{ padding:16px 12px; }
 }
+
+
+/* ---------- action cards (card with a button pinned to the bottom) ----------
+   <div class="card action"> … <a class="btn">…</a></div>
+   Added 10/07/26 for the Trunk or Treat page; safe to reuse anywhere. */
+.card.action{ display:flex; flex-direction:column; padding:22px 20px 20px; }
+.card.action h3{ font-size:16px; margin-bottom:8px; }
+.card.action p{ font-size:13px; line-height:1.65; margin:0 0 10px; }
+.card.action .meta{ font-size:12px; font-weight:600; color: var(--gold-deep); }
+.card.action .btn{ margin-top:auto; padding:11px 18px; font-size:14px; text-align:center; }
+.card.action .spacer{ margin-top:auto; }
+
+/* hero key-facts line */
+.hero .facts{ margin-top:14px; font-size:15px; font-weight:600; color: var(--white); }
+.hero .facts span{ white-space:nowrap; }
+.hero .facts .sep{ color: var(--gold); padding:0 8px; }
