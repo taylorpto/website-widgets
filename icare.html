@@ -27,15 +27,9 @@
     font-size:13px; font-weight:600; color:var(--navy);
     font-style:normal;
   }
-  .form-embed{
-    margin:26px auto 0; max-width:680px; background:var(--white);
-    border:1px solid var(--rule); border-radius:var(--radius-card); overflow:hidden;
-  }
-  .form-embed iframe{ display:block; width:100%; height:2100px; border:0; }
   @media (max-width:600px){
     .quotes{ gap:14px; }
     .quote{ padding:18px 16px; }
-    .form-embed iframe{ height:2400px; }
   }
 </style>
 </head>
@@ -180,16 +174,7 @@
     <p style="margin-top:22px;">
       <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScljusxpKYir_0iIrvsK-5W1PrhLOYj1pituVhJXOyKtXhvPQ/viewform" target="_blank" rel="noopener">Sign up to read</a>
     </p>
-    <p class="small">Opens the sign-up form in a new tab. You can also fill it out right here.</p>
-    <!-- Google Form embedded inline. If the form gains questions, raise the
-         iframe height so it doesn't scroll inside itself. -->
-    <div class="form-embed">
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScljusxpKYir_0iIrvsK-5W1PrhLOYj1pituVhJXOyKtXhvPQ/viewform?embedded=true" title="iCare volunteer sign-up form"
-              loading="lazy" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-    </div>
-    <p class="small" style="margin-top:14px;">
-      Form not showing, or asking about cookies? <a href="https://docs.google.com/forms/d/e/1FAIpQLScljusxpKYir_0iIrvsK-5W1PrhLOYj1pituVhJXOyKtXhvPQ/viewform" target="_blank" rel="noopener">Open it in a new tab</a>
-    </p>
+    <p class="small">Opens the sign-up form in a new tab.</p>
     <p class="small">Questions? <a href="mailto:icare@taylorpto.org" target="_blank" rel="noopener">icare@taylorpto.org</a> · We respond within 48 hours</p>
   </div>
 </div>
