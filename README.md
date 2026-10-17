@@ -88,16 +88,17 @@ Available blocks, all shown in the template: `hero`, `section` (plain or
 
 ## The donation button
 
-Every PayPal link must use:
+Every donate link must use the PTO's Zeffy donation form:
 
 ```
-https://www.paypal.com/donate/?hosted_button_id=MYPCRJ76FN38C
+https://www.zeffy.com/en-US/donation-form/donate-to-change-lives-26738
 ```
 
-An older button, `5XXRGA2TRTQWC`, is retired. It is still pasted into parts of
-the live Google Sites **Fundraising** page and into some Drive documents. If you
-find it anywhere, replace it — do not copy a donate link from an old file
-without checking the ID first.
+Switched from PayPal on 2026-10-16. The PayPal donate button
+(`MYPCRJ76FN38C`) began showing "This organization's page is broken" on
+PayPal's side, and `5XXRGA2TRTQWC` was retired before that. Neither PayPal
+donate ID should be used anywhere. If you find one in an old file or on a
+Google Sites page, replace it with the Zeffy link.
 
 ---
 
