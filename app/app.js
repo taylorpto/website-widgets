@@ -1,0 +1,416 @@
+/* Taylor PTO app.
+ *
+ * WHERE THE CONTENT COMES FROM — volunteers shouldn't need to edit this file:
+ *   - Events, closures, early dismissals: the PTO Google Calendar.
+ *     A GitHub Action copies it into data/events.json every hour.
+ *   - Annual Fund numbers: the "Thermometer" tab of
+ *     "Taylor PTO – Website Data (PUBLIC)" (same sheet as the website widget).
+ *   - Links (donate, WhatsApp, social, forms): the LINKS block just below.
+ */
+
+const LINKS = {
+  donate:    "https://www.zeffy.com/en-US/donation-form/donate-to-change-lives-26738",
+  whatsapp:  "https://chat.whatsapp.com/KSj4QMNzrMLF6wHFQiA1so",
+  facebook:  "https://www.facebook.com/taylorschoolpto",
+  instagram: "https://www.instagram.com/thetaylorpto",
+  icareForm: "https://docs.google.com/forms/d/e/1FAIpQLScljusxpKYir_0iIrvsK-5W1PrhLOYj1pituVhJXOyKtXhvPQ/viewform",
+  website:   "https://www.taylorpto.org",
+  subscribe: "../calendar/",
+  email:     "board@taylorpto.org",
+};
+const FUND_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRmROCVg9om6B3094slMgJtisKHuac1PBqVBaKS_XTO7__d7mrQR7twDlUkLxXJ8QBym15lgNsEvUm5/pub?gid=278622557&single=true&output=csv";
+
+/* ------------------------------------------------------------------ */
+
+const TZ = "America/New_York";
+const CATS = {
+  closure: "No school", early: "Early dismissal", pto: "PTO", meeting: "PTO meeting", school: "School",
+};
+const $view = document.getElementById("view");
+const $title = document.getElementById("screen-title");
+
+const state = { data: null, fund: null, offline: false, filter: "all", openId: null };
+
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+
+/* ---------- dates (everything in school-local time) ---------- */
+
+const ymdFmt = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" });
+const nyYmd = (d) => ymdFmt.format(d);
+const todayYmd = () => nyYmd(new Date());
+const ymdToDate = (ymd) => new Date(ymd + "T12:00:00Z");
+const addDays = (ymd, n) => new Date(ymdToDate(ymd).getTime() + n * 86400000).toISOString().slice(0, 10);
+const fmtUTC = (ymd, opts) => new Intl.DateTimeFormat("en-US", { timeZone: "UTC", ...opts }).format(ymdToDate(ymd));
+const dow = (ymd) => ymdToDate(ymd).getUTCDay();
+const timeFmt = new Intl.DateTimeFormat("en-US", { timeZone: TZ, hour: "numeric", minute: "2-digit" });
+const fmtTime = (iso) => timeFmt.format(new Date(iso)).replace(":00", "").replace(" ", " ");
+
+const startYmd = (e) => (e.allDay ? e.start : nyYmd(new Date(e.start)));
+const endYmd = (e) => (e.allDay ? e.end : nyYmd(new Date(e.end)));
+const covers = (e, ymd) => startYmd(e) <= ymd && endYmd(e) >= ymd;
+
+function whenText(e, withDate) {
+  const s = startYmd(e), en = endYmd(e);
+  const parts = [];
+  if (withDate || s !== en) {
+    parts.push(s === en
+      ? fmtUTC(s, { weekday: "short", month: "short", day: "numeric" })
+      : `${fmtUTC(s, { month: "short", day: "numeric" })} – ${fmtUTC(en, { month: s.slice(5, 7) === en.slice(5, 7) ? undefined : "short", day: "numeric" })}`);
+  }
+  if (!e.allDay) parts.push(`${fmtTime(e.start)}–${fmtTime(e.end)}`);
+  else if (!withDate && s === en) parts.push("All day");
+  return parts.join(" · ");
+}
+
+/* ---------- school-day status ---------- */
+
+function dayStatus(ymd) {
+  const evs = state.data?.events || [];
+  const rot = state.data?.rotation || {};
+  const closure = evs.find((e) => e.cat === "closure" && covers(e, ymd));
+  if (closure) return { kind: "closure", main: "No school", sub: closure.title };
+  const wd = dow(ymd);
+  if (wd === 0 || wd === 6) return { kind: "weekend", main: "No school", sub: "It's the weekend." };
+  const early = evs.find((e) => e.cat === "early" && covers(e, ymd));
+  const rotDays = Object.keys(rot).sort();
+  const inYear = rotDays.length && ymd >= rotDays[0] && ymd <= rotDays[rotDays.length - 1];
+  if (early) return { kind: "early", main: "Early dismissal", sub: early.title.replace(/early dismissal/i, "").replace(/^[\s(]+|[\s)]+$/g, "") || "12:05 PM", rot: rot[ymd] };
+  if (rot[ymd] || inYear) return { kind: "school", main: "School day", sub: null, rot: rot[ymd] };
+  return { kind: "off", main: "No school", sub: "Outside the school year." };
+}
+
+/* ---------- data ---------- */
+
+// Order by local school date, all-day items first, then by start time.
+function sortEvents(data) {
+  const key = (e) => `${startYmd(e)}|${e.allDay ? "0" : "1" + e.start}`;
+  data.events.sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0));
+  return data;
+}
+
+async function loadEvents() {
+  try {
+    const r = await fetch("data/events.json", { cache: "no-cache" });
+    if (!r.ok) throw new Error(r.status);
+    state.data = sortEvents(await r.json());
+    state.offline = false;
+    store.set("events", state.data);
+  } catch {
+    state.data = store.get("events");
+    state.offline = true;
+  }
+}
+
+function parseCSV(text) {
+  const out = {};
+  text.trim().split(/\r?\n/).forEach((line) => {
+    const m = line.match(/^\s*"?([^",]+)"?\s*,\s*"?([^"]*?)"?\s*$/);
+    if (m) out[m[1].trim().toLowerCase()] = m[2].trim();
+  });
+  return out;
+}
+const num = (v) => Number(String(v ?? "").replace(/[^0-9.]/g, "")) || 0;
+
+async function loadFund() {
+  try {
+    const r = await fetch(FUND_CSV);
+    if (!r.ok) throw new Error(r.status);
+    const d = parseCSV(await r.text());
+    state.fund = { goal: num(d.goal), raised: num(d.raised), donors: num(d.donors), deadline: d.deadline || null };
+    store.set("fund", state.fund);
+  } catch {
+    state.fund = store.get("fund");
+  }
+}
+
+/* ---------- event rows ---------- */
+
+function cleanDescription(html) {
+  if (!html) return "";
+  const t = document.createElement("textarea");
+  t.innerHTML = html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n").replace(/<[^>]+>/g, "");
+  return esc(t.value.trim()).replace(/(https?:\/\/[^\s<]+[^\s<.,)])/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+}
+
+function icsFor(e) {
+  const stamp = (iso) => iso.replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const icsEsc = (s) => String(s || "").replace(/[\\,;]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Taylor PTO//App//EN", "BEGIN:VEVENT",
+    `UID:${e.id}@taylorpto.org`, `DTSTAMP:${stamp(new Date().toISOString())}`];
+  if (e.allDay) {
+    lines.push(`DTSTART;VALUE=DATE:${e.start.replace(/-/g, "")}`, `DTEND;VALUE=DATE:${addDays(e.end, 1).replace(/-/g, "")}`);
+  } else {
+    lines.push(`DTSTART:${stamp(e.start)}`, `DTEND:${stamp(e.end)}`);
+  }
+  lines.push(`SUMMARY:${icsEsc(e.title)}`);
+  if (e.location) lines.push(`LOCATION:${icsEsc(e.location)}`);
+  lines.push("END:VEVENT", "END:VCALENDAR");
+  return "data:text/calendar;charset=utf-8," + encodeURIComponent(lines.join("\r\n"));
+}
+
+const CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+
+function evRow(e, { withDate = false } = {}) {
+  const s = startYmd(e);
+  const open = state.openId === e.id;
+  const meta = whenText(e, false);
+  const detailId = "d-" + btoa(unescape(encodeURIComponent(e.id))).replace(/[^a-z0-9]/gi, "").slice(0, 24);
+  return `<li class="ev${open ? " open" : ""}" data-id="${esc(e.id)}">
+    <button type="button" aria-expanded="${open}" aria-controls="${detailId}">
+      <span class="ev-date"><span class="ev-dow">${fmtUTC(s, { weekday: "short" })}</span><span class="ev-dom">${fmtUTC(s, { day: "numeric" })}</span></span>
+      <span>
+        <span class="ev-title">${esc(e.title)}</span>
+        <span class="ev-meta">${esc(withDate ? fmtUTC(s, { month: "short", day: "numeric" }) + (meta ? " · " + meta : "") : meta)}</span>
+        <span class="tag ${e.cat}">${CATS[e.cat]}</span>
+      </span>
+      ${CHEV}
+    </button>
+    <div class="ev-detail" id="${detailId}" ${open ? "" : "hidden"}>
+      ${e.location ? `<p>${esc(e.location)}</p>` : ""}
+      ${e.description && e.description !== e.location ? `<p>${cleanDescription(e.description)}</p>` : ""}
+      <div class="ev-actions">
+        <a href="${icsFor(e)}" download="${esc(e.title.replace(/[^\w\s-]/g, "").trim().slice(0, 40) || "event")}.ics">Add to my calendar</a>
+        ${e.location ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}" target="_blank" rel="noopener">Directions</a>` : ""}
+      </div>
+    </div>
+  </li>`;
+}
+
+$view.addEventListener("click", (ev) => {
+  const btn = ev.target.closest(".ev > button");
+  if (btn) {
+    const li = btn.parentElement;
+    const isOpen = li.classList.toggle("open");
+    btn.setAttribute("aria-expanded", isOpen);
+    li.querySelector(".ev-detail").hidden = !isOpen;
+    state.openId = isOpen ? li.dataset.id : null;
+    return;
+  }
+  const chip = ev.target.closest(".chip");
+  if (chip) { state.filter = chip.dataset.f; render(); }
+  if (ev.target.closest("[data-dismiss-install]")) { store.set("installDismissed", Date.now()); render(); }
+  if (ev.target.closest("[data-install]") && deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.finally(() => { deferredPrompt = null; render(); });
+  }
+});
+
+/* ---------- install banner ---------- */
+
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferredPrompt = e; if (location.hash === "#today" || !location.hash) render(); });
+const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+function installBanner() {
+  if (isStandalone()) return "";
+  const dismissed = store.get("installDismissed");
+  if (dismissed && Date.now() - dismissed < 14 * 86400000) return "";
+  const shareIco = '<svg class="share-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg>';
+  let body;
+  if (isIOS()) body = `<p><strong>Put Taylor PTO on your home screen.</strong></p><p class="small muted">In Safari, tap ${shareIco} <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>`;
+  else if (deferredPrompt) body = `<p><strong>Put Taylor PTO on your home screen.</strong></p><p class="small muted">It opens like an app and works without a connection.</p><button class="btn" type="button" data-install>Install</button>`;
+  else return "";
+  return `<div class="card install"><img src="icons/icon.png" alt="" width="44" height="44"><div>${body}</div><button class="x" type="button" aria-label="Dismiss" data-dismiss-install>×</button></div>`;
+}
+
+/* ---------- screens ---------- */
+
+function upcoming(fromYmd, days, cats) {
+  const to = addDays(fromYmd, days);
+  return (state.data?.events || []).filter((e) => endYmd(e) >= fromYmd && startYmd(e) <= to && (!cats || cats.includes(e.cat)));
+}
+
+function fundMeter(f, big) {
+  if (!f || !f.goal) return "";
+  const pct = Math.max(0, Math.min(100, (f.raised / f.goal) * 100));
+  const money = (n) => "$" + Math.round(n).toLocaleString("en-US");
+  return big
+    ? `<div class="raised">${money(f.raised)}</div><p class="muted" style="margin:6px 0 0">raised of our ${money(f.goal)} goal</p>
+       <div class="track" role="progressbar" aria-label="Annual Fund progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><div class="fill${pct >= 100 ? " met" : ""}" style="width:${pct}%"></div></div>`
+    : `<div class="fund-row"><span class="amt">${money(f.raised)}</span><span class="small muted">of ${money(f.goal)}</span></div>
+       <div class="track" style="margin:0 0 8px;height:12px" role="progressbar" aria-label="Annual Fund progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><div class="fill${pct >= 100 ? " met" : ""}" style="width:${pct}%"></div></div>`;
+}
+
+function viewToday() {
+  const t = todayYmd();
+  const st = dayStatus(t);
+  let tm = addDays(t, 1);
+  const tmSt = dayStatus(tm);
+  const tmLabel = fmtUTC(tm, { weekday: "long" });
+
+  const heads = upcoming(addDays(t, 1), 14, ["closure", "early"]);
+  const next = upcoming(t, 21, ["pto", "meeting", "school"]).filter((e) => !(e.allDay && /spirit day|order school/i.test(e.title))).slice(0, 6);
+
+  return `
+    ${state.offline ? '<div class="offline">You\'re offline. Showing the last saved calendar.</div>' : ""}
+    ${installBanner()}
+    <div class="card status ${st.kind}">
+      <p class="status-date">${fmtUTC(t, { weekday: "long", month: "long", day: "numeric" })}</p>
+      <p class="status-main">${esc(st.main)}${st.rot ? `<span class="rot">${esc(st.rot)}</span>` : ""}</p>
+      ${st.sub ? `<p class="status-sub">${esc(st.sub)}</p>` : ""}
+      <div class="tomorrow"><strong>${tmLabel}:</strong> ${esc(tmSt.kind === "early" ? "Early dismissal, " + tmSt.sub : tmSt.kind === "closure" ? "No school, " + tmSt.sub : tmSt.kind === "school" ? "School day" + (tmSt.rot ? ", " + tmSt.rot : "") : "No school")}</div>
+    </div>
+
+    ${heads.length ? `<h2 class="section-h">Heads up: next two weeks</h2>
+      <div class="card cal-card"><ul class="ev-list">${heads.map((e) => evRow(e, { withDate: true })).join("")}</ul></div>` : ""}
+
+    <h2 class="section-h">Coming up</h2>
+    <div class="card cal-card">${next.length ? `<ul class="ev-list">${next.map((e) => evRow(e, { withDate: true })).join("")}</ul>` : '<p class="empty">Nothing on the calendar for the next three weeks.</p>'}</div>
+    <a class="btn ghost" href="#calendar">See the full calendar</a>
+
+    ${state.fund?.goal && !(state.fund.deadline && new Date(state.fund.deadline + "T23:59:59") < new Date()) ? `<h2 class="section-h">Taylor Annual Fund</h2>
+      <a class="card fund-mini" href="#give" style="display:block;text-decoration:none">${fundMeter(state.fund, false)}<span class="small" style="color:var(--heading);font-weight:700">Give to the Annual Fund →</span></a>` : ""}
+
+    ${updatedLine()}
+  `;
+}
+
+function viewCalendar() {
+  const t = todayYmd();
+  const f = state.filter;
+  const groups = { all: null, closures: ["closure", "early"], pto: ["pto"], meeting: ["meeting"], school: ["school"] };
+  const evs = (state.data?.events || []).filter((e) => endYmd(e) >= t && (!groups[f] || groups[f].includes(e.cat)));
+  const byMonth = new Map();
+  for (const e of evs) {
+    const k = startYmd(e) < t ? t.slice(0, 7) : startYmd(e).slice(0, 7);
+    if (!byMonth.has(k)) byMonth.set(k, []);
+    byMonth.get(k).push(e);
+  }
+  const chips = [["all", "All"], ["closures", "No school & early"], ["pto", "PTO events"], ["meeting", "Meetings"], ["school", "School"]]
+    .map(([k, l]) => `<button class="chip" type="button" data-f="${k}" aria-pressed="${f === k}">${l}</button>`).join("");
+
+  return `
+    ${state.offline ? '<div class="offline">You\'re offline. Showing the last saved calendar.</div>' : ""}
+    <div class="filters" role="group" aria-label="Filter events">${chips}</div>
+    ${byMonth.size ? [...byMonth].map(([k, list]) => `
+      <h2 class="month-h">${fmtUTC(k + "-15", { month: "long", year: "numeric" })}</h2>
+      <div class="card cal-card"><ul class="ev-list">${list.map((e) => evRow(e)).join("")}</ul></div>`).join("")
+      : '<p class="empty">No upcoming events in this category.</p>'}
+    <div class="card" style="margin-top:20px">
+      <h2 class="card-h">Get it in your own calendar</h2>
+      <p class="small muted">Subscribe once and every date shows up in Apple, Google or Outlook Calendar. It stays up to date on its own.</p>
+      <a class="btn" href="${LINKS.subscribe}">Subscribe to the calendar</a>
+    </div>
+    ${updatedLine()}
+  `;
+}
+
+function viewGive() {
+  const f = state.fund;
+  let meta = "";
+  let closed = false;
+  if (f?.deadline) {
+    const left = Math.ceil((new Date(f.deadline + "T23:59:59") - new Date()) / 86400000);
+    closed = left < 0;
+    meta = left > 1 ? `<strong>${left}</strong> days left` : left === 1 ? "<strong>1</strong> day left" : left === 0 ? "<strong>Last day</strong>" : "Now closed";
+  }
+  // While the Annual Fund is running, show its progress. Once the deadline passes,
+  // fall back to a general "support the PTO" card (the Zeffy form takes gifts year-round).
+  const active = f?.goal && !closed;
+  return `
+    <div class="card">
+      ${active ? `<p class="section-h" style="margin:0 0 8px">The Taylor Annual Fund</p>
+        ${fundMeter(f, true)}<div class="fund-meta"><span>${f.donors ? `<strong>${f.donors}</strong> ${f.donors === 1 ? "family has" : "families have"} given` : ""}</span><span>${meta}</span></div>
+        <p class="small" style="margin:16px 0 14px">One gift covers a whole year of PTO programs for every Taylor student: field trips, assemblies, classroom grants, and staff appreciation.</p>
+        <a class="btn gold" href="${LINKS.donate}" target="_blank" rel="noopener">Give to the Annual Fund</a>`
+      : `<p class="section-h" style="margin:0 0 8px">Support the Taylor PTO</p>
+        <h2 class="card-h">Every dollar stays at Taylor</h2>
+        <p class="small" style="margin:6px 0 14px">Gifts pay for field trips, assemblies, classroom grants, and staff appreciation for every Taylor student.</p>
+        <a class="btn gold" href="${LINKS.donate}" target="_blank" rel="noopener">Make a gift</a>`}
+      <p class="fine" style="margin:12px 0 0;text-align:center">Checks can go to the school office, payable to Taylor PTO. The Taylor PTO is a 501(c)(3) nonprofit.</p>
+    </div>
+    ${(() => {
+      const fr = upcoming(todayYmd(), 90, ["pto"]).filter((e) => /fundrais|trivia|bingo|b\.i\.t|boosterthon|stuffies|swag|book fair/i.test(e.title) && !/spirit day/i.test(e.title)).slice(0, 5);
+      return fr.length ? `<h2 class="section-h">Upcoming fundraisers</h2><div class="card cal-card"><ul class="ev-list">${fr.map((e) => evRow(e, { withDate: true })).join("")}</ul></div>` : "";
+    })()}
+  `;
+}
+
+const ICON = {
+  chat: '<path d="M4 18.5 5.3 15A7.5 7.5 0 1 1 9 18.3Z"/>',
+  fb: '<path d="M14 8.5h2.5V5H14a3.5 3.5 0 0 0-3.5 3.5V11H8v3.5h2.5V21H14v-6.5h2.5L17 11h-3V9a.5.5 0 0 1 .5-.5Z"/>',
+  ig: '<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="17" cy="7" r=".6"/>',
+  hand: '<path d="M7 11V6.5a1.5 1.5 0 0 1 3 0V11M10 10V5a1.5 1.5 0 0 1 3 0v5M13 10V6a1.5 1.5 0 0 1 3 0v6"/><path d="M16 9.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-.5A6.5 6.5 0 0 1 5 16.5L4 13a1.5 1.5 0 0 1 2.8-1.2L7 12.5"/>',
+  web: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.5 5.4 3.5 8.5s-1 5.9-3.5 8.5c-2.5-2.6-3.5-5.4-3.5-8.5s1-5.9 3.5-8.5Z"/>',
+  mail: '<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/>',
+};
+const GO = '<svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+const link = (href, ico, title, desc, ext = true) =>
+  `<li><a href="${href}"${ext ? ' target="_blank" rel="noopener"' : ""}><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[ico]}</svg></span><span><strong>${title}</strong><span class="d">${desc}</span></span>${GO}</a></li>`;
+
+function viewConnect() {
+  const meeting = upcoming(todayYmd(), 120, ["meeting"]).find((e) => /pto meeting/i.test(e.title));
+  return `
+    ${meeting ? `<div class="card">
+      <p class="section-h" style="margin:0 0 6px">Next PTO meeting</p>
+      <h2 class="card-h">${fmtUTC(startYmd(meeting), { weekday: "long", month: "long", day: "numeric" })}${meeting.allDay ? "" : ", " + fmtTime(meeting.start)}</h2>
+      <p class="small muted" style="margin:0">${esc(meeting.location ? meeting.location.split(",")[0] : "Taylor Elementary")}${/babysit/i.test(meeting.title) ? " · Babysitting provided" : ""}</p>
+      <p class="small" style="margin:10px 0 0">Every Taylor family is a member. Come to a meeting, no sign-up needed.</p>
+    </div>` : ""}
+
+    <h2 class="section-h">Volunteer</h2>
+    <div class="card" style="padding:4px 14px"><ul class="links">
+      ${link(LINKS.icareForm, "hand", "Sign up for iCare", "Read with a class or help out in the iCare program")}
+      ${link("mailto:" + LINKS.email + "?subject=Volunteering%20with%20the%20Taylor%20PTO", "mail", "Offer to help", "Email the PTO board", false)}
+    </ul></div>
+
+    <h2 class="section-h">Stay in the loop</h2>
+    <div class="card" style="padding:4px 14px"><ul class="links">
+      ${link(LINKS.whatsapp, "chat", "Join the WhatsApp group", "Reminders and quick updates")}
+      ${link(LINKS.facebook, "fb", "Facebook", "taylorschoolpto")}
+      ${link(LINKS.instagram, "ig", "Instagram", "@thetaylorpto")}
+      ${link(LINKS.website, "web", "taylorpto.org", "The full PTO website")}
+      ${link("mailto:" + LINKS.email, "mail", "Email the board", LINKS.email, false)}
+    </ul></div>
+    <p class="fine" style="text-align:center;margin-top:16px">Taylor Elementary PTO · 196 South Street, Foxborough, MA</p>
+  `;
+}
+
+function updatedLine() {
+  if (!state.data?.updated) return "";
+  const d = new Date(state.data.updated);
+  return `<p class="updated">Calendar synced ${d.toLocaleString("en-US", { timeZone: TZ, month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</p>`;
+}
+
+/* ---------- router ---------- */
+
+const SCREENS = { today: ["Today", viewToday], calendar: ["Calendar", viewCalendar], give: ["Give", viewGive], connect: ["Connect", viewConnect] };
+
+function render() {
+  const key = (location.hash || "#today").slice(1);
+  const [title, fn] = SCREENS[key] || SCREENS.today;
+  $title.textContent = title;
+  document.title = title === "Today" ? "Taylor PTO" : `${title} · Taylor PTO`;
+  document.querySelectorAll(".tabs a").forEach((a) => {
+    if (a.dataset.tab === (SCREENS[key] ? key : "today")) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
+  $view.innerHTML = state.data ? fn() : '<p class="empty">Loading…</p>';
+}
+
+let lastKey = null;
+window.addEventListener("hashchange", () => {
+  const key = location.hash.slice(1);
+  if (key !== lastKey) { state.openId = null; window.scrollTo(0, 0); lastKey = key; }
+  render();
+});
+
+(async function init() {
+  const cached = store.get("events");
+  if (cached) { state.data = cached; state.fund = store.get("fund"); render(); }
+  await Promise.all([loadEvents(), loadFund()]);
+  if (!state.data) { $view.innerHTML = '<p class="empty">Couldn\'t load the calendar. Check your connection and try again.</p>'; return; }
+  render();
+})();
+
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+
+// Refresh when the app comes back to the foreground (so "Today" is never stale).
+document.addEventListener("visibilitychange", async () => {
+  if (document.visibilityState === "visible") { await Promise.all([loadEvents(), loadFund()]); render(); }
+});

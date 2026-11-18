@@ -1,0 +1,38 @@
+# Copies the PTO Google Calendar into app/data/events.json every hour,
+# so the Taylor PTO app always shows current dates.
+# Nothing to do here by hand. To run it right now: Actions tab → "Sync calendar" → Run workflow.
+name: Sync calendar
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-calendar
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/ics-to-json.mjs
+      - name: Commit if the calendar changed
+        run: |
+          if git diff --quiet -- app/data/events.json; then
+            echo "Calendar unchanged."
+          else
+            git config user.name "calendar-sync"
+            git config user.email "calendar-sync@users.noreply.github.com"
+            git add app/data/events.json
+            git commit -m "Sync calendar"
+            git push
+          fi

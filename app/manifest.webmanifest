@@ -1,0 +1,20 @@
+{
+  "name": "Taylor PTO",
+  "short_name": "Taylor PTO",
+  "description": "School days, PTO events, and ways to help at Charles G. Taylor Elementary.",
+  "id": "/website-widgets/app/",
+  "start_url": "./?source=homescreen",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF8F4",
+  "theme_color": "#1B3A6B",
+  "icons": [
+    {
+      "src": "icons/icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
