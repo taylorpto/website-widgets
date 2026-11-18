@@ -299,3 +299,8 @@ body.in-room main{padding-bottom:96px}
 .toggles{list-style:none;margin:0;padding:0}
 .toggles label{display:flex;align-items:center;gap:12px;min-height:48px;font-size:15px;font-weight:600;color:var(--heading);cursor:pointer}
 .toggles input{width:22px;height:22px;accent-color:var(--navy)}
+.or{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:13px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--rule)}
+.btn.google{background:#fff;color:#1F1F1F;border:1.5px solid #747775;gap:10px}
+.btn.google svg{width:20px;height:20px}
+@media (prefers-color-scheme:dark){ .btn.google{background:#131314;color:#E3E3E3;border-color:#8E918F} }

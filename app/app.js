@@ -367,7 +367,7 @@ function viewConnect() {
       ${link(LINKS.website, "web", "taylorpto.org", "The full PTO website")}
       ${link("mailto:" + LINKS.email, "mail", "Email the board", LINKS.email, false)}
     </ul></div>
-    <p class="fine" style="text-align:center;margin-top:16px">Taylor Elementary PTO · 196 South Street, Foxborough, MA</p>
+    <p class="fine" style="text-align:center;margin-top:16px">Taylor Elementary PTO · 196 South Street, Foxborough, MA · <a href="privacy.html">Privacy</a></p>
   `;
 }
 
