@@ -1,8 +1,9 @@
 // Offline support for the Taylor PTO app.
 // Bump VERSION whenever app.js / app.css / index.html change, so phones pick up the new copy.
-const VERSION = "taylor-pto-v1";
+const VERSION = "taylor-pto-v2";
 const SHELL = [
-  "./", "index.html", "app.css?v=1", "app.js?v=1", "manifest.webmanifest",
+  "./", "index.html", "app.css?v=2", "app.js?v=2", "chat.js?v=2", "manifest.webmanifest",
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js",
   "icons/icon.png",
 ];
 
@@ -26,7 +27,7 @@ self.addEventListener("fetch", (e) => {
   // Live data: try the network first, fall back to the last copy.
   const isData = url.pathname.endsWith("/data/events.json") || url.hostname === "docs.google.com";
   // App shell and fonts: serve from cache, refresh in the background.
-  const isShell = url.origin === location.origin || /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
+  const isShell = (url.origin === location.origin && !url.search.includes("code=")) || /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname) || url.href.startsWith("https://cdn.jsdelivr.net/npm/@supabase/");
   if (!isData && !isShell) return;
 
   if (isData) {
@@ -48,4 +49,30 @@ self.addEventListener("fetch", (e) => {
       return hit || net;
     })
   );
+});
+
+// ---------- push notifications ----------
+self.addEventListener("push", (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch { d = { body: e.data && e.data.text() }; }
+  e.waitUntil(self.registration.showNotification(d.title || "Taylor PTO", {
+    body: d.body || "",
+    icon: "icons/icon.png",
+    badge: "icons/icon.png",
+    tag: d.tag,
+    renotify: !!d.tag,
+    data: { url: d.url || "./#chat" },
+  }));
+});
+
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const target = new URL(e.notification.data?.url || "./#chat", self.registration.scope).href;
+  e.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    for (const w of wins) {
+      if (w.url.startsWith(self.registration.scope)) { await w.focus(); return w.navigate(target); }
+    }
+    return self.clients.openWindow(target);
+  })());
 });

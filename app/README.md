@@ -24,3 +24,33 @@ Meeting, School) are guessed from event titles, so keep words like
 
 If you change `app.js`, `app.css` or `index.html`, bump `VERSION` in
 `app/sw.js` (and the `?v=` numbers) so installed phones fetch the new copy.
+
+## Chat
+
+The **Chat** tab is a private chat for Taylor families, replacing the WhatsApp
+group. It runs on a free Supabase project (`taylor-pto-app`, owned by the
+`taylorpto` GitHub account; sign in to supabase.com with that account).
+
+- **Joining:** a parent signs in with a 6-digit code sent to their email,
+  enters the invite code from the newsletter, and waits. A board member
+  approves them under **Chat → Members**.
+- **Rooms:** Announcements (board posts only; everyone gets a notification),
+  General, one room per grade, Volunteers, and a private Board room.
+- **Board tools (Chat → Members):** approve or decline families, remove
+  members, make someone a board member, see the invite code and change it,
+  and handle reported messages. Anyone can delete their own messages; board
+  members can delete any message.
+- **Notifications:** parents turn them on in the app. On iPhone this only
+  works from the home-screen app (Share, then Add to Home Screen).
+
+Where things live:
+
+| What | Where |
+|---|---|
+| Who can see and post what (enforced by the database) | `supabase/schema.sql` |
+| Push notification sender | `supabase/functions/notify/index.ts` |
+| The chat screens | `app/chat.js` |
+| First board admin(s) | `admin_emails` in the database's private settings: anyone signing up with one of those emails becomes an approved board member automatically |
+
+Nothing secret is stored in this repo. The keys in `app/chat.js` are public
+by design; access is controlled by the database rules.

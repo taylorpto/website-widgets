@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app.css?v=1">
+<link rel="stylesheet" href="app.css?v=2">
 </head>
 <body>
 
@@ -39,6 +39,10 @@
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>
     <span>Calendar</span>
   </a>
+  <a href="#chat" data-tab="chat">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18.5 5.3 15A7.5 7.5 0 1 1 9 18.3Z"/></svg>
+    <span>Chat</span>
+  </a>
   <a href="#give" data-tab="give">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20Z"/></svg>
     <span>Give</span>
@@ -49,6 +53,8 @@
   </a>
 </nav>
 
-<script src="app.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="chat.js?v=2"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

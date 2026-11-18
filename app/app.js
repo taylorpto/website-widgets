@@ -382,14 +382,23 @@ function updatedLine() {
 const SCREENS = { today: ["Today", viewToday], calendar: ["Calendar", viewCalendar], give: ["Give", viewGive], connect: ["Connect", viewConnect] };
 
 function render() {
-  const key = (location.hash || "#today").slice(1);
+  const path = (location.hash || "#today").slice(1);
+  const key = path.split("/")[0];
+  const tab = key === "chat" || SCREENS[key] ? key : "today";
+  document.querySelectorAll(".tabs a").forEach((a) => {
+    if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
+  document.body.classList.toggle("in-room", /^chat\/(?!admin|settings)[^/]+$/.test(path));
+  if (key === "chat") {
+    document.title = "Chat · Taylor PTO";
+    if (window.Chat) window.Chat.render(path);
+    else { $title.textContent = "Chat"; $view.innerHTML = '<p class="empty">Chat couldn\'t load. Check your connection.</p>'; }
+    return;
+  }
   const [title, fn] = SCREENS[key] || SCREENS.today;
   $title.textContent = title;
   document.title = title === "Today" ? "Taylor PTO" : `${title} · Taylor PTO`;
-  document.querySelectorAll(".tabs a").forEach((a) => {
-    if (a.dataset.tab === (SCREENS[key] ? key : "today")) a.setAttribute("aria-current", "page");
-    else a.removeAttribute("aria-current");
-  });
   $view.innerHTML = state.data ? fn() : '<p class="empty">Loading…</p>';
 }
 
