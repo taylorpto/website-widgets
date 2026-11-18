@@ -27,7 +27,7 @@ jobs:
       - run: node scripts/ics-to-json.mjs
       - name: Commit if the calendar changed
         run: |
-          if git diff --quiet -- app/data/events.json; then
+          if [ -z "$(git status --porcelain -- app/data/events.json)" ]; then
             echo "Calendar unchanged."
           else
             git config user.name "calendar-sync"
