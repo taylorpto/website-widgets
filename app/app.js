@@ -5,12 +5,11 @@
  *     A GitHub Action copies it into data/events.json every hour.
  *   - Annual Fund numbers: the "Thermometer" tab of
  *     "Taylor PTO – Website Data (PUBLIC)" (same sheet as the website widget).
- *   - Links (donate, WhatsApp, social, forms): the LINKS block just below.
+ *   - Links (donate, social, forms): the LINKS block just below.
  */
 
 const LINKS = {
   donate:    "https://www.zeffy.com/en-US/donation-form/donate-to-change-lives-26738",
-  whatsapp:  "https://chat.whatsapp.com/KSj4QMNzrMLF6wHFQiA1so",
   facebook:  "https://www.facebook.com/taylorschoolpto",
   instagram: "https://www.instagram.com/thetaylorpto",
   icareForm: "https://docs.google.com/forms/d/e/1FAIpQLScljusxpKYir_0iIrvsK-5W1PrhLOYj1pituVhJXOyKtXhvPQ/viewform",
@@ -361,7 +360,7 @@ function viewConnect() {
 
     <h2 class="section-h">Stay in the loop</h2>
     <div class="card" style="padding:4px 14px"><ul class="links">
-      ${link(LINKS.whatsapp, "chat", "Join the WhatsApp group", "Reminders and quick updates")}
+      ${link("#/chat", "chat", "Family chat", "Announcements, grade rooms and reminders, right here in the app", false)}
       ${link(LINKS.facebook, "fb", "Facebook", "taylorschoolpto")}
       ${link(LINKS.instagram, "ig", "Instagram", "@thetaylorpto")}
       ${link(LINKS.website, "web", "taylorpto.org", "The full PTO website")}

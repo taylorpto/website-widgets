@@ -12,7 +12,7 @@ PTO badge as its icon and works without a connection.
 |---|---|
 | Events, no-school days, early dismissals, rotation days | The PTO Google Calendar. The app picks up changes within the hour. |
 | Annual Fund numbers | The *Thermometer* tab of the Website Data sheet (same as the website widget). After the deadline the app swaps the progress bar for a general "Make a gift" card. |
-| Donate / WhatsApp / social / iCare form links | The `LINKS` block at the top of `app/app.js`. |
+| Donate / social / iCare form links | The `LINKS` block at the top of `app/app.js`. |
 
 How the calendar gets in: browsers can't read Google Calendar directly, so
 the **Sync calendar** GitHub Action (`.github/workflows/sync-calendar.yml`)
