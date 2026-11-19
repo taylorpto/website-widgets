@@ -126,6 +126,7 @@ p{margin:0 0 10px}
   display:grid; grid-template-columns:48px 1fr auto; gap:12px; align-items:start;
   padding:12px 2px; min-height:56px;
 }
+.ev.no-day > button{grid-template-columns:1fr auto}
 .ev > button:focus-visible{outline:3px solid var(--gold);outline-offset:-2px;border-radius:8px}
 .ev-date{text-align:center;line-height:1.1}
 .ev-dow{display:block;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}

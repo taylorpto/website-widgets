@@ -130,14 +130,14 @@ function icsFor(e) {
 
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 
-function evRow(e, { withDate = false } = {}) {
+function evRow(e, { withDate = false, noDay = false } = {}) {
   const s = startYmd(e);
   const open = state.openId === e.id;
   const meta = whenText(e, false);
   const detailId = "d-" + btoa(unescape(encodeURIComponent(e.id))).replace(/[^a-z0-9]/gi, "").slice(0, 24);
-  return `<li class="ev${open ? " open" : ""}" data-id="${esc(e.id)}">
+  return `<li class="ev${open ? " open" : ""}${noDay ? " no-day" : ""}" data-id="${esc(e.id)}">
     <button type="button" aria-expanded="${open}" aria-controls="${detailId}">
-      <span class="ev-date"><span class="ev-dow">${fmtUTC(s, { weekday: "short" })}</span><span class="ev-dom">${fmtUTC(s, { day: "numeric" })}</span></span>
+      ${noDay ? "" : `<span class="ev-date"><span class="ev-dow">${fmtUTC(s, { weekday: "short" })}</span><span class="ev-dom">${fmtUTC(s, { day: "numeric" })}</span></span>`}
       <span>
         <span class="ev-title">${esc(e.title)}</span>
         <span class="ev-meta">${esc(withDate ? fmtUTC(s, { month: "short", day: "numeric" }) + (meta ? " · " + meta : "") : meta)}</span>
@@ -217,26 +217,37 @@ function shortStatus(s) {
 function viewToday() {
   const t = todayYmd();
   const st = dayStatus(t);
-  let tm = addDays(t, 1);
+  const tm = addDays(t, 1);
   const tmSt = dayStatus(tm);
   const tmLabel = fmtUTC(tm, { weekday: "long" });
 
-  const heads = upcoming(addDays(t, 1), 14, ["closure", "early"]);
-  const next = upcoming(t, 21, ["pto", "meeting", "school"]).filter((e) => !(e.allDay && /spirit day|order school/i.test(e.title))).slice(0, 6);
+  // Today / this week / coming up. Each event shows once, under the day it starts
+  // (or under Today if it's already underway).
+  const wd = dow(t);
+  const weekend = wd === 0 || wd === 6;
+  const weekStart = weekend ? addDays(t, wd === 6 ? 2 : 1) : tm;   // weekends look ahead to next week
+  const weekEnd = addDays(t, weekend ? (wd === 6 ? 8 : 7) : 7 - wd); // through Sunday
+  const skip = (e) => e.allDay && /spirit day|order school/i.test(e.title);
+  const all = (state.data?.events || []).filter((e) => e.cat !== "rotation" && !skip(e));
+  const todays = all.filter((e) => covers(e, t) && e.cat !== "closure" && e.cat !== "early");
+  const week = all.filter((e) => startYmd(e) >= weekStart && startYmd(e) <= weekEnd);
+  const later = all.filter((e) => startYmd(e) > weekEnd && startYmd(e) <= addDays(weekEnd, 21)).slice(0, 8);
+  const list = (evs, withDate) => `<div class="card cal-card"><ul class="ev-list">${evs.map((e) => evRow(e, { withDate, noDay: !withDate })).join("")}</ul></div>`;
 
   return `
     ${state.offline ? '<div class="offline">You\'re offline. Showing the last saved calendar.</div>' : ""}
     ${installBanner()}
     ${st.kind === "closure" || st.kind === "early" ? `<div class="card status ${st.kind}"><p class="status-sub">${esc(st.kind === "early" ? "Dismissal at " + st.sub : st.sub)}</p></div>` : ""}
-    <div class="card tomorrow-card"><strong>Tomorrow, ${tmLabel}:</strong> ${esc(shortStatus(tmSt))}</div>
 
-    ${heads.length ? `<h2 class="section-h">Heads up: next two weeks</h2>
-      <div class="card cal-card"><ul class="ev-list">${heads.map((e) => evRow(e, { withDate: true })).join("")}</ul></div>` : ""}
+    <h2 class="section-h">Today</h2>
+    ${todays.length ? list(todays, false) : '<div class="card"><p class="empty" style="margin:0;padding:0">Nothing else on the calendar today.</p></div>'}
+    ${weekend ? "" : `<div class="card tomorrow-card"><strong>Tomorrow, ${tmLabel}:</strong> ${esc(shortStatus(tmSt))}</div>`}
+
+    ${week.length ? `<h2 class="section-h">${weekend ? "Next week" : "Rest of this week"}</h2>${list(week, true)}` : ""}
 
     <h2 class="section-h">Coming up</h2>
-    <div class="card cal-card">${next.length ? `<ul class="ev-list">${next.map((e) => evRow(e, { withDate: true })).join("")}</ul>` : '<p class="empty">Nothing on the calendar for the next three weeks.</p>'}</div>
+    ${later.length ? list(later, true) : '<div class="card"><p class="empty" style="margin:0;padding:0">Nothing on the calendar in the next few weeks.</p></div>'}
     <a class="btn ghost" href="#calendar">See the full calendar</a>
-
 
     ${updatedLine()}
   `;
