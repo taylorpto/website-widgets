@@ -1,5 +1,7 @@
 # The Taylor PTO app
 
+> **Running this day to day?** See the Taylor PTO App & Website SOP: https://claude.ai/artifact/GibDErzVE5HGn2uUAWw27N (accounts, everyday updates, chat admin, hand-off and yearly checklists, troubleshooting).
+
 `app/` is a phone app parents can install from
 **https://app.taylorpto.org** (the old taylorpto.github.io/website-widgets/app/ address forwards there). No App Store is involved:
 on iPhone they open the link in Safari or Chrome, tap **Share → Add to Home Screen**;
