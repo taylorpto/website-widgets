@@ -360,7 +360,7 @@ function viewConnect() {
 
     <h2 class="section-h">Stay in the loop</h2>
     <div class="card" style="padding:4px 14px"><ul class="links">
-      ${link("#/chat", "chat", "Family chat", "Announcements, grade rooms and reminders, right here in the app", false)}
+      ${link("#chat", "chat", "Family chat", "Announcements, grade rooms and reminders, right here in the app", false)}
       ${link(LINKS.facebook, "fb", "Facebook", "taylorschoolpto")}
       ${link(LINKS.instagram, "ig", "Instagram", "@thetaylorpto")}
       ${link(LINKS.website, "web", "taylorpto.org", "The full PTO website")}

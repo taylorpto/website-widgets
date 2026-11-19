@@ -1,8 +1,8 @@
 // Offline support for the Taylor PTO app.
 // Bump VERSION whenever app.js / app.css / index.html change, so phones pick up the new copy.
-const VERSION = "taylor-pto-v5";
+const VERSION = "taylor-pto-v6";
 const SHELL = [
-  "./", "index.html", "app.css?v=5", "app.js?v=5", "chat.js?v=5", "manifest.webmanifest",
+  "./", "index.html", "app.css?v=6", "app.js?v=6", "chat.js?v=6", "manifest.webmanifest",
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js",
   "icons/icon.png",
 ];
