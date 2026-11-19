@@ -24,6 +24,8 @@ const CATS = {
 };
 const $view = document.getElementById("view");
 const $title = document.getElementById("screen-title");
+const $eyebrow = document.getElementById("screen-eyebrow");
+const EYEBROW = "Charles G. Taylor Elementary";
 
 const state = { data: null, offline: false, filter: "all", openId: null };
 
@@ -199,6 +201,19 @@ function upcoming(fromYmd, days, cats) {
   return (state.data?.events || []).filter((e) => endYmd(e) >= fromYmd && startYmd(e) <= to && (!cats || cats.includes(e.cat)));
 }
 
+// What today is, in a few words. Shown as the Today screen's header.
+function todayHeadline(st) {
+  if (st.kind === "school") return st.rot || "School day";
+  if (st.kind === "early") return "Early dismissal" + (st.rot ? " · " + st.rot : "");
+  return "No school";
+}
+function shortStatus(s) {
+  if (s.kind === "school") return s.rot || "School day";
+  if (s.kind === "early") return "Early dismissal, " + s.sub;
+  if (s.kind === "closure") return "No school, " + s.sub;
+  return "No school";
+}
+
 function viewToday() {
   const t = todayYmd();
   const st = dayStatus(t);
@@ -212,12 +227,8 @@ function viewToday() {
   return `
     ${state.offline ? '<div class="offline">You\'re offline. Showing the last saved calendar.</div>' : ""}
     ${installBanner()}
-    <div class="card status ${st.kind}">
-      <p class="status-date">${fmtUTC(t, { weekday: "long", month: "long", day: "numeric" })}</p>
-      <p class="status-main">${esc(st.main)}${st.rot ? `<span class="rot">${esc(st.rot)}</span>` : ""}</p>
-      ${st.sub ? `<p class="status-sub">${esc(st.sub)}</p>` : ""}
-      <div class="tomorrow"><strong>${tmLabel}:</strong> ${esc(tmSt.kind === "early" ? "Early dismissal, " + tmSt.sub : tmSt.kind === "closure" ? "No school, " + tmSt.sub : tmSt.kind === "school" ? "School day" + (tmSt.rot ? ", " + tmSt.rot : "") : "No school")}</div>
-    </div>
+    ${st.kind === "closure" || st.kind === "early" ? `<div class="card status ${st.kind}"><p class="status-sub">${esc(st.kind === "early" ? "Dismissal at " + st.sub : st.sub)}</p></div>` : ""}
+    <div class="card tomorrow-card"><strong>Tomorrow, ${tmLabel}:</strong> ${esc(shortStatus(tmSt))}</div>
 
     ${heads.length ? `<h2 class="section-h">Heads up: next two weeks</h2>
       <div class="card cal-card"><ul class="ev-list">${heads.map((e) => evRow(e, { withDate: true })).join("")}</ul></div>` : ""}
@@ -337,13 +348,16 @@ function render() {
   });
   document.body.classList.toggle("in-room", /^chat\/(?!admin|settings)[^/]+$/.test(path));
   if (key === "chat") {
+    $eyebrow.textContent = EYEBROW;
     document.title = "Chat · Taylor PTO";
     if (window.Chat) window.Chat.render(path);
     else { $title.textContent = "Chat"; $view.innerHTML = '<p class="empty">Chat couldn\'t load. Check your connection.</p>'; }
     return;
   }
   const [title, fn] = SCREENS[key] || SCREENS.today;
-  $title.textContent = title;
+  const isToday = fn === viewToday && state.data;
+  $title.textContent = isToday ? todayHeadline(dayStatus(todayYmd())) : title;
+  $eyebrow.textContent = isToday ? fmtUTC(todayYmd(), { weekday: "long", month: "long", day: "numeric" }) : EYEBROW;
   document.title = title === "Today" ? "Taylor PTO" : `${title} · Taylor PTO`;
   $view.innerHTML = state.data ? fn() : '<p class="empty">Loading…</p>';
 }
