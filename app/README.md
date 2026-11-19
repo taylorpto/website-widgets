@@ -2,7 +2,7 @@
 
 `app/` is a phone app parents can install from
 **https://taylorpto.github.io/website-widgets/app/**. No App Store is involved:
-on iPhone they open the link in Safari, tap **Share → Add to Home Screen**;
+on iPhone they open the link in Safari or Chrome, tap **Share → Add to Home Screen**;
 on Android Chrome offers an **Install** button. It opens full-screen with the
 PTO badge as its icon and works without a connection.
 

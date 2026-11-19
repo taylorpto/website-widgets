@@ -212,7 +212,7 @@ function installBanner() {
   if (dismissed && Date.now() - dismissed < 14 * 86400000) return "";
   const shareIco = '<svg class="share-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11v9h12v-9"/></svg>';
   let body;
-  if (isIOS()) body = `<p><strong>Put Taylor PTO on your home screen.</strong></p><p class="small muted">In Safari, tap ${shareIco} <strong>Share</strong>, then <strong>Add to Home Screen</strong>.</p>`;
+  if (isIOS()) body = `<p><strong>Put Taylor PTO on your home screen.</strong></p><p class="small muted">In Safari or Chrome, tap ${shareIco} <strong>Share</strong>, then <strong>Add to Home Screen</strong>. (In Safari, Share may be under <strong>⋯</strong>.)</p>`;
   else if (deferredPrompt) body = `<p><strong>Put Taylor PTO on your home screen.</strong></p><p class="small muted">It opens like an app and works without a connection.</p><button class="btn" type="button" data-install>Install</button>`;
   else return "";
   return `<div class="card install"><img src="icons/icon.png" alt="" width="44" height="44"><div>${body}</div><button class="x" type="button" aria-label="Dismiss" data-dismiss-install>×</button></div>`;
