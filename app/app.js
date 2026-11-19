@@ -388,7 +388,24 @@ window.addEventListener("hashchange", () => {
   render();
 })();
 
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+// Pick up new versions without making people close the app twice:
+// check for an update whenever the app comes back to the foreground, and reload
+// once the new version takes over (unless someone is mid-typing; then wait).
+if ("serviceWorker" in navigator) {
+  const hadController = !!navigator.serviceWorker.controller;
+  let pendingReload = false;
+  const typing = () => /^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName || "");
+  navigator.serviceWorker.register("sw.js").then((reg) => {
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") reg.update().catch(() => {});
+      else if (pendingReload) location.reload();
+    });
+  });
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!hadController) return;            // first install, nothing to refresh
+    if (typing()) pendingReload = true; else location.reload();
+  });
+}
 
 // Refresh when the app comes back to the foreground (so "Today" is never stale).
 document.addEventListener("visibilitychange", async () => {
