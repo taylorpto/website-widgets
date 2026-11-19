@@ -3,8 +3,6 @@
  * WHERE THE CONTENT COMES FROM — volunteers shouldn't need to edit this file:
  *   - Events, closures, early dismissals: the PTO Google Calendar.
  *     A GitHub Action copies it into data/events.json every hour.
- *   - Annual Fund numbers: the "Thermometer" tab of
- *     "Taylor PTO – Website Data (PUBLIC)" (same sheet as the website widget).
  *   - Links (donate, social, forms): the LINKS block just below.
  */
 
@@ -17,7 +15,6 @@ const LINKS = {
   subscribe: "../calendar/",
   email:     "board@taylorpto.org",
 };
-const FUND_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRmROCVg9om6B3094slMgJtisKHuac1PBqVBaKS_XTO7__d7mrQR7twDlUkLxXJ8QBym15lgNsEvUm5/pub?gid=278622557&single=true&output=csv";
 
 /* ------------------------------------------------------------------ */
 
@@ -28,7 +25,7 @@ const CATS = {
 const $view = document.getElementById("view");
 const $title = document.getElementById("screen-title");
 
-const state = { data: null, fund: null, offline: false, filter: "all", openId: null };
+const state = { data: null, offline: false, filter: "all", openId: null };
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const store = {
@@ -101,28 +98,6 @@ async function loadEvents() {
   } catch {
     state.data = store.get("events");
     state.offline = true;
-  }
-}
-
-function parseCSV(text) {
-  const out = {};
-  text.trim().split(/\r?\n/).forEach((line) => {
-    const m = line.match(/^\s*"?([^",]+)"?\s*,\s*"?([^"]*?)"?\s*$/);
-    if (m) out[m[1].trim().toLowerCase()] = m[2].trim();
-  });
-  return out;
-}
-const num = (v) => Number(String(v ?? "").replace(/[^0-9.]/g, "")) || 0;
-
-async function loadFund() {
-  try {
-    const r = await fetch(FUND_CSV);
-    if (!r.ok) throw new Error(r.status);
-    const d = parseCSV(await r.text());
-    state.fund = { goal: num(d.goal), raised: num(d.raised), donors: num(d.donors), deadline: d.deadline || null };
-    store.set("fund", state.fund);
-  } catch {
-    state.fund = store.get("fund");
   }
 }
 
@@ -224,17 +199,6 @@ function upcoming(fromYmd, days, cats) {
   return (state.data?.events || []).filter((e) => endYmd(e) >= fromYmd && startYmd(e) <= to && (!cats || cats.includes(e.cat)));
 }
 
-function fundMeter(f, big) {
-  if (!f || !f.goal) return "";
-  const pct = Math.max(0, Math.min(100, (f.raised / f.goal) * 100));
-  const money = (n) => "$" + Math.round(n).toLocaleString("en-US");
-  return big
-    ? `<div class="raised">${money(f.raised)}</div><p class="muted" style="margin:6px 0 0">raised of our ${money(f.goal)} goal</p>
-       <div class="track" role="progressbar" aria-label="Annual Fund progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><div class="fill${pct >= 100 ? " met" : ""}" style="width:${pct}%"></div></div>`
-    : `<div class="fund-row"><span class="amt">${money(f.raised)}</span><span class="small muted">of ${money(f.goal)}</span></div>
-       <div class="track" style="margin:0 0 8px;height:12px" role="progressbar" aria-label="Annual Fund progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}"><div class="fill${pct >= 100 ? " met" : ""}" style="width:${pct}%"></div></div>`;
-}
-
 function viewToday() {
   const t = todayYmd();
   const st = dayStatus(t);
@@ -262,8 +226,6 @@ function viewToday() {
     <div class="card cal-card">${next.length ? `<ul class="ev-list">${next.map((e) => evRow(e, { withDate: true })).join("")}</ul>` : '<p class="empty">Nothing on the calendar for the next three weeks.</p>'}</div>
     <a class="btn ghost" href="#calendar">See the full calendar</a>
 
-    ${state.fund?.goal && !(state.fund.deadline && new Date(state.fund.deadline + "T23:59:59") < new Date()) ? `<h2 class="section-h">Taylor Annual Fund</h2>
-      <a class="card fund-mini" href="#give" style="display:block;text-decoration:none">${fundMeter(state.fund, false)}<span class="small" style="color:var(--heading);font-weight:700">Give to the Annual Fund →</span></a>` : ""}
 
     ${updatedLine()}
   `;
@@ -300,27 +262,12 @@ function viewCalendar() {
 }
 
 function viewGive() {
-  const f = state.fund;
-  let meta = "";
-  let closed = false;
-  if (f?.deadline) {
-    const left = Math.ceil((new Date(f.deadline + "T23:59:59") - new Date()) / 86400000);
-    closed = left < 0;
-    meta = left > 1 ? `<strong>${left}</strong> days left` : left === 1 ? "<strong>1</strong> day left" : left === 0 ? "<strong>Last day</strong>" : "Now closed";
-  }
-  // While the Annual Fund is running, show its progress. Once the deadline passes,
-  // fall back to a general "support the PTO" card (the Zeffy form takes gifts year-round).
-  const active = f?.goal && !closed;
   return `
     <div class="card">
-      ${active ? `<p class="section-h" style="margin:0 0 8px">The Taylor Annual Fund</p>
-        ${fundMeter(f, true)}<div class="fund-meta"><span>${f.donors ? `<strong>${f.donors}</strong> ${f.donors === 1 ? "family has" : "families have"} given` : ""}</span><span>${meta}</span></div>
-        <p class="small" style="margin:16px 0 14px">One gift covers a whole year of PTO programs for every Taylor student: field trips, assemblies, classroom grants, and staff appreciation.</p>
-        <a class="btn gold" href="${LINKS.donate}" target="_blank" rel="noopener">Give to the Annual Fund</a>`
-      : `<p class="section-h" style="margin:0 0 8px">Support the Taylor PTO</p>
-        <h2 class="card-h">Every dollar stays at Taylor</h2>
-        <p class="small" style="margin:6px 0 14px">Gifts pay for field trips, assemblies, classroom grants, and staff appreciation for every Taylor student.</p>
-        <a class="btn gold" href="${LINKS.donate}" target="_blank" rel="noopener">Make a gift</a>`}
+      <p class="section-h" style="margin:0 0 8px">Support the Taylor PTO</p>
+      <h2 class="card-h">Every dollar stays at Taylor</h2>
+      <p class="small" style="margin:6px 0 14px">Gifts pay for field trips, assemblies, classroom grants, and staff appreciation for every Taylor student.</p>
+      <a class="btn gold" href="${LINKS.donate}" target="_blank" rel="noopener">Make a gift</a>
       <p class="fine" style="margin:12px 0 0;text-align:center">Checks can go to the school office, payable to Taylor PTO. The Taylor PTO is a 501(c)(3) nonprofit.</p>
     </div>
     ${(() => {
@@ -410,8 +357,8 @@ window.addEventListener("hashchange", () => {
 
 (async function init() {
   const cached = store.get("events");
-  if (cached) { state.data = cached; state.fund = store.get("fund"); render(); }
-  await Promise.all([loadEvents(), loadFund()]);
+  if (cached) { state.data = cached; render(); }
+  await loadEvents();
   if (!state.data) { $view.innerHTML = '<p class="empty">Couldn\'t load the calendar. Check your connection and try again.</p>'; return; }
   render();
 })();
@@ -420,5 +367,5 @@ if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
 
 // Refresh when the app comes back to the foreground (so "Today" is never stale).
 document.addEventListener("visibilitychange", async () => {
-  if (document.visibilityState === "visible") { await Promise.all([loadEvents(), loadFund()]); render(); }
+  if (document.visibilityState === "visible") { await loadEvents(); render(); }
 });

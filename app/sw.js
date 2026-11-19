@@ -1,8 +1,8 @@
 // Offline support for the Taylor PTO app.
 // Bump VERSION whenever app.js / app.css / index.html change, so phones pick up the new copy.
-const VERSION = "taylor-pto-v6";
+const VERSION = "taylor-pto-v7";
 const SHELL = [
-  "./", "index.html", "app.css?v=6", "app.js?v=6", "chat.js?v=6", "manifest.webmanifest",
+  "./", "index.html", "app.css?v=7", "app.js?v=7", "chat.js?v=7", "manifest.webmanifest",
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js",
   "icons/icon.png",
 ];
@@ -25,7 +25,7 @@ self.addEventListener("fetch", (e) => {
   const url = new URL(req.url);
 
   // Live data: try the network first, fall back to the last copy.
-  const isData = url.pathname.endsWith("/data/events.json") || url.hostname === "docs.google.com";
+  const isData = url.pathname.endsWith("/data/events.json");
   // App shell and fonts: serve from cache, refresh in the background.
   const isShell = (url.origin === location.origin && !url.search.includes("code=")) || /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname) || url.href.startsWith("https://cdn.jsdelivr.net/npm/@supabase/");
   if (!isData && !isShell) return;
