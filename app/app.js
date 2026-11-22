@@ -11,6 +11,7 @@ const LINKS = {
   facebook:  "https://www.facebook.com/taylorschoolpto",
   instagram: "https://www.instagram.com/thetaylorpto",
   icareForm: "https://docs.google.com/forms/d/e/1FAIpQLScljusxpKYir_0iIrvsK-5W1PrhLOYj1pituVhJXOyKtXhvPQ/viewform",
+  holidayShoppeForm: "https://docs.google.com/forms/d/e/1FAIpQLScuHstFizmMCmbU3haXV2fD3eeHJrHBGmCMmmav5wEIrPmPWw/viewform",
   website:   "https://www.taylorpto.org",
   subscribe: "../calendar/",
   email:     "board@taylorpto.org",
@@ -323,6 +324,7 @@ function viewConnect() {
 
     <h2 class="section-h">Volunteer</h2>
     <div class="card" style="padding:4px 14px"><ul class="links">
+      ${todayYmd() <= HOLIDAY_SHOPPE_LAST_DAY ? link("#connect/holiday-shoppe", "hand", "Holiday Shoppe volunteers", "Help run the shoppe Dec 9–11", false) : ""}
       ${link(LINKS.icareForm, "hand", "Sign up for iCare", "Read with a class or help out in the iCare program")}
       ${link("mailto:" + LINKS.email + "?subject=Volunteering%20with%20the%20Taylor%20PTO", "mail", "Offer to help", "Email the PTO board", false)}
     </ul></div>
@@ -336,6 +338,24 @@ function viewConnect() {
       ${link("mailto:" + LINKS.email, "mail", "Email the board", LINKS.email, false)}
     </ul></div>
     <p class="fine" style="text-align:center;margin-top:16px">Taylor Elementary PTO · 196 South Street, Foxborough, MA · <a href="privacy.html">Privacy</a></p>
+  `;
+}
+
+// Holiday Shoppe volunteer sign-up (Dec 9–11, 2026, per the PTO Master Calendar).
+// The Connect link disappears on its own after the last day.
+const HOLIDAY_SHOPPE_LAST_DAY = "2026-12-11";
+
+function viewHolidayShoppe() {
+  return `
+    <div class="card">
+      <p class="section-h" style="margin:0 0 6px">Volunteer</p>
+      <h2 class="card-h">Holiday Shoppe · Dec 9–11</h2>
+      <p class="small" style="margin:0">Students shop for gifts during the school day, and parent volunteers run the shoppe. Pick the days and times that work and we'll follow up with your shift.</p>
+    </div>
+    <div class="form-embed">
+      <iframe src="${LINKS.holidayShoppeForm}?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
+    </div>
+    <p class="fine" style="text-align:center;margin-top:12px">Form not showing? <a href="${LINKS.holidayShoppeForm}" target="_blank" rel="noopener">Open it in your browser</a> · <a href="#connect">Back to Connect</a></p>
   `;
 }
 
@@ -363,6 +383,13 @@ function render() {
     document.title = "Chat · Taylor PTO";
     if (window.Chat) window.Chat.render(path);
     else { $title.textContent = "Chat"; $view.innerHTML = '<p class="empty">Chat couldn\'t load. Check your connection.</p>'; }
+    return;
+  }
+  if (path === "connect/holiday-shoppe") {
+    $title.textContent = "Holiday Shoppe";
+    $eyebrow.textContent = EYEBROW;
+    document.title = "Holiday Shoppe · Taylor PTO";
+    $view.innerHTML = viewHolidayShoppe();
     return;
   }
   const [title, fn] = SCREENS[key] || SCREENS.today;

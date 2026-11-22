@@ -306,3 +306,7 @@ body.in-room main{padding-bottom:96px}
 .btn.google{background:#fff;color:#1F1F1F;border:1.5px solid #747775;gap:10px}
 .btn.google svg{width:20px;height:20px}
 @media (prefers-color-scheme:dark){ .btn.google{background:#131314;color:#E3E3E3;border-color:#8E918F} }
+
+/* Embedded Google Form (Holiday Shoppe volunteer sign-up) */
+.form-embed{margin-top:14px;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.form-embed iframe{display:block;width:100%;height:1650px;border:0}
