@@ -352,6 +352,9 @@ function viewHolidayShoppe() {
       <h2 class="card-h">Holiday Shoppe · Dec 9–11</h2>
       <p class="small" style="margin:0">Students shop for gifts during the school day, and parent volunteers run the shoppe. Pick the days and times that work and we'll follow up with your shift.</p>
     </div>
+    <div class="card" style="padding:8px">
+      <img src="../img/holiday-shoppe-flyer-2026.png" alt="Holiday Shoppe 2026 flyer: December 9, 10 and 11, during the school day. Prices $0.25 to $15, most items $3 to $8. Cash only: an envelope and gift list come home with each student; send them back with cash by Tuesday, December 8. Bring a bag; gifts come home wrapped and tagged. Volunteers needed. Scholarships are available from Mr. G. at mrg@taylorpto.org." style="display:block;width:100%;height:auto;border-radius:8px" loading="lazy">
+    </div>
     <div class="form-embed">
       <iframe src="${LINKS.holidayShoppeForm}?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
     </div>
