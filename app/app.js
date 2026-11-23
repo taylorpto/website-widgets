@@ -359,7 +359,7 @@ const HOLIDAY_SHOPPE_SCHEDULE = [
   { day: "Thursday, December 10", classes: [
     ["9:30 a.m.", "Nally", "Kindergarten"],
     ["10:05 a.m.", "Zeitler", "Grade 4"],
-    ["10:45 a.m.", "Fossella", "Grade 4"],
+    ["10:45 a.m.", "Fossela", "Grade 4"],
     ["11:50 a.m.", "Roberts", "Kindergarten"],
     ["12:30 p.m.", "Walsh", "Grade 1"],
     ["1:05 p.m.", "Zabbo", "Grade 1"],
