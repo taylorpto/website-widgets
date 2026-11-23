@@ -344,6 +344,29 @@ function viewConnect() {
 // Holiday Shoppe volunteer sign-up (Dec 9–11, 2026, per the PTO Master Calendar).
 // The Connect link disappears on its own after the last day.
 const HOLIDAY_SHOPPE_LAST_DAY = "2026-12-11";
+// Class shopping times, from the school's Holiday Shop sign-up sheet (11/22/26).
+// Keep in sync with holiday-shoppe.html and the form's class-time options.
+const HOLIDAY_SHOPPE_SCHEDULE = [
+  { day: "Wednesday, December 9", classes: [
+    ["9:30 a.m.", "Coliflores", "Grade 2"],
+    ["10:05 a.m.", "Hoag", "Grade 2"],
+    ["10:45 a.m.", "Jarvis", "Grade 3"],
+    ["11:50 a.m.", "Culverhouse", "Kindergarten"],
+    ["12:30 p.m.", "Reardon", "Grade 1"],
+    ["1:40 p.m.", "Timpany", "Grade 3"],
+    ["2:15 p.m.", "Donovan", "Grade 3"],
+  ] },
+  { day: "Thursday, December 10", classes: [
+    ["9:30 a.m.", "Nally", "Kindergarten"],
+    ["10:05 a.m.", "Zeitler", "Grade 4"],
+    ["10:45 a.m.", "Fossella", "Grade 4"],
+    ["11:50 a.m.", "Roberts", "Kindergarten"],
+    ["12:30 p.m.", "Walsh", "Grade 1"],
+    ["1:05 p.m.", "Zabbo", "Grade 1"],
+    ["1:40 p.m.", "Doherty", "Grade 4"],
+    ["2:15 p.m.", "O'Donnell", "Grade 3"],
+  ] },
+];
 
 function viewHolidayShoppe() {
   // Same header and details as the website page (holiday-shoppe.html).
@@ -364,8 +387,15 @@ function viewHolidayShoppe() {
       <p class="small" style="margin:0;padding:10px 0 4px;border-top:1px solid var(--rule)"><strong>Scholarships are available.</strong> Contact Mr. G. at <a href="mailto:mrg@taylorpto.org">mrg@taylorpto.org</a>.</p>
     </div>
 
+    <h2 class="section-h">When each class shops</h2>
+    <p class="small" style="margin:0 2px 4px">Volunteers usually help during their child's class time, or right before or after.</p>
+    ${HOLIDAY_SHOPPE_SCHEDULE.map((d) => `<div class="card" style="padding:4px 14px 6px">
+      <p class="small" style="margin:8px 0 2px;font-weight:700;color:var(--heading)">${d.day}</p>
+      ${d.classes.map(([t, n, g], i) => row(t, `${esc(n)} · ${g}`, false)).join("")}
+    </div>`).join("")}
+
     <h2 class="section-h">Help run the shoppe</h2>
-    <p class="small" style="margin:0 2px 4px">The shoppe is run entirely by parent volunteers. Pick the days and times that work and we'll follow up with your shift.</p>
+    <p class="small" style="margin:0 2px 4px">The shoppe is run entirely by parent volunteers. Pick the class times you can help and we'll follow up to confirm your shift.</p>
     <div class="form-embed">
       <iframe src="${LINKS.holidayShoppeForm}?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
     </div>

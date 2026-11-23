@@ -309,4 +309,4 @@ body.in-room main{padding-bottom:96px}
 
 /* Embedded Google Form (Holiday Shoppe volunteer sign-up) */
 .form-embed{margin-top:14px;background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
-.form-embed iframe{display:block;width:100%;height:2200px;border:0}
+.form-embed iframe{display:block;width:100%;height:2400px;border:0}

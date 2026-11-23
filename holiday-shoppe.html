@@ -12,7 +12,10 @@
 <style>
   /* page-specific only: the embedded Google Form */
   .form-embed{background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:18px}
-  .form-embed iframe{display:block;width:100%;height:2200px;border:0}
+  .form-embed iframe{display:block;width:100%;height:2400px;border:0}
+  .sched h3{margin:18px 0 0}
+  .sched .ways{margin-top:8px}
+  .sched .ways .label{flex-basis:92px}
 </style>
 </head>
 <body class="theme-holiday-shoppe">
@@ -56,13 +59,54 @@
   </div>
 </div>
 
+<!-- ══ CLASS SCHEDULE ═════════════════════════════════════
+     From the school's Holiday Shop sign-up sheet (photo from Ben,
+     11/22/26). 11:20 is open both days; Wed 1:05 is open. No
+     Friday 12/11 classes were on the sheet. Keep in sync with the
+     form's class-time options and app/app.js.
+     ═══════════════════════════════════════════════════════ -->
+<div class="section sched">
+  <div class="wrap">
+    <p class="eyebrow on-light">Class schedule</p>
+    <h2>When each class shops</h2>
+    <p class="lead">Volunteers usually help during their child&#39;s class time, or right before or after.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px 32px;margin-top:6px;">
+      <div>
+        <h3>Wednesday, December 9</h3>
+        <ul class="ways">
+          <li><span class="label">9:30 a.m.</span><span>Coliflores &middot; Grade 2</span></li>
+          <li><span class="label">10:05 a.m.</span><span>Hoag &middot; Grade 2</span></li>
+          <li><span class="label">10:45 a.m.</span><span>Jarvis &middot; Grade 3</span></li>
+          <li><span class="label">11:50 a.m.</span><span>Culverhouse &middot; Kindergarten</span></li>
+          <li><span class="label">12:30 p.m.</span><span>Reardon &middot; Grade 1</span></li>
+          <li><span class="label">1:40 p.m.</span><span>Timpany &middot; Grade 3</span></li>
+          <li><span class="label">2:15 p.m.</span><span>Donovan &middot; Grade 3</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Thursday, December 10</h3>
+        <ul class="ways">
+          <li><span class="label">9:30 a.m.</span><span>Nally &middot; Kindergarten</span></li>
+          <li><span class="label">10:05 a.m.</span><span>Zeitler &middot; Grade 4</span></li>
+          <li><span class="label">10:45 a.m.</span><span>Fossella &middot; Grade 4</span></li>
+          <li><span class="label">11:50 a.m.</span><span>Roberts &middot; Kindergarten</span></li>
+          <li><span class="label">12:30 p.m.</span><span>Walsh &middot; Grade 1</span></li>
+          <li><span class="label">1:05 p.m.</span><span>Zabbo &middot; Grade 1</span></li>
+          <li><span class="label">1:40 p.m.</span><span>Doherty &middot; Grade 4</span></li>
+          <li><span class="label">2:15 p.m.</span><span>O'Donnell &middot; Grade 3</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ VOLUNTEER SIGN-UP ══════════════════════════════════ -->
-<div class="section">
+<div class="section tinted">
   <div class="wrap">
     <p class="eyebrow on-light">Volunteer</p>
     <h2>Help run the shoppe</h2>
-    <p class="lead">The shoppe is run entirely by parent volunteers. Pick the days and
-       times that work for you and we'll follow up with your shift.</p>
+    <p class="lead">The shoppe is run entirely by parent volunteers. Pick the class
+       times you can help and we'll follow up to confirm your shift.</p>
     <div class="form-embed">
       <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScuHstFizmMCmbU3haXV2fD3eeHJrHBGmCMmmav5wEIrPmPWw/viewform?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
     </div>
