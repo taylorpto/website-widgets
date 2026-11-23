@@ -324,7 +324,7 @@ function viewConnect() {
 
     <h2 class="section-h">Volunteer</h2>
     <div class="card" style="padding:4px 14px"><ul class="links">
-      ${todayYmd() <= HOLIDAY_SHOPPE_LAST_DAY ? link("#connect/holiday-shoppe", "hand", "Holiday Shoppe volunteers", "Help run the shoppe Dec 9–11", false) : ""}
+      ${todayYmd() <= HOLIDAY_SHOPPE_LAST_DAY ? link("#connect/holiday-shoppe", "hand", "Holiday Shoppe volunteers", "Help run the shoppe Dec 9–10", false) : ""}
       ${link(LINKS.icareForm, "hand", "Sign up for iCare", "Read with a class or help out in the iCare program")}
       ${link("mailto:" + LINKS.email + "?subject=Volunteering%20with%20the%20Taylor%20PTO", "mail", "Offer to help", "Email the PTO board", false)}
     </ul></div>
@@ -341,9 +341,9 @@ function viewConnect() {
   `;
 }
 
-// Holiday Shoppe volunteer sign-up (Dec 9–11, 2026, per the PTO Master Calendar).
+// Holiday Shoppe volunteer sign-up (Wed Dec 9 and Thu Dec 10, 2026; not open Friday 12/11).
 // The Connect link disappears on its own after the last day.
-const HOLIDAY_SHOPPE_LAST_DAY = "2026-12-11";
+const HOLIDAY_SHOPPE_LAST_DAY = "2026-12-10";
 // Class shopping times, from the school's Holiday Shop sign-up sheet (11/22/26).
 // Keep in sync with holiday-shoppe.html and the form's class-time options.
 const HOLIDAY_SHOPPE_SCHEDULE = [
@@ -376,7 +376,7 @@ function viewHolidayShoppe() {
       <img src="../img/tiger-holiday.png" alt="The Taylor Tiger in a Santa hat and scarf, holding a wrapped gift" style="display:block;width:110px;height:auto;margin:4px auto 10px">
       <h2 class="card-h" style="color:#ffffff;margin:0 0 6px">Holiday Shoppe</h2>
       <p class="small" style="margin:0 0 10px;color:rgba(255,255,255,0.85)">Kids shop on their own for small gifts for family, friends, teachers, even pets!</p>
-      <p class="small" style="margin:0;font-weight:700;color:#ffffff">December 9, 10 &amp; 11 · During the school day</p>
+      <p class="small" style="margin:0;font-weight:700;color:#ffffff">December 9 &amp; 10 · During the school day</p>
     </div>
 
     <h2 class="section-h">How shopping works</h2>
