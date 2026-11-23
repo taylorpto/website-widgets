@@ -324,7 +324,7 @@ function viewConnect() {
 
     <h2 class="section-h">Volunteer</h2>
     <div class="card" style="padding:4px 14px"><ul class="links">
-      ${todayYmd() <= HOLIDAY_SHOPPE_LAST_DAY ? link("#connect/holiday-shoppe", "hand", "Holiday Shoppe volunteers", "Help run the shoppe Dec 9–10", false) : ""}
+      ${todayYmd() <= HOLIDAY_SHOPPE_LAST_DAY ? link("#connect/holiday-shoppe", "hand", "Holiday Shoppe volunteers", "Setup Dec 8 · shopping Dec 9–11", false) : ""}
       ${link(LINKS.icareForm, "hand", "Sign up for iCare", "Read with a class or help out in the iCare program")}
       ${link("mailto:" + LINKS.email + "?subject=Volunteering%20with%20the%20Taylor%20PTO", "mail", "Offer to help", "Email the PTO board", false)}
     </ul></div>
@@ -341,9 +341,10 @@ function viewConnect() {
   `;
 }
 
-// Holiday Shoppe volunteer sign-up (Wed Dec 9 and Thu Dec 10, 2026; not open Friday 12/11).
+// Holiday Shoppe volunteer sign-up: setup Tue 12/8 3:30–5:30, classes shop Wed 12/9 + Thu 12/10,
+// make-up shopping Fri 12/11 9:00–12:00 (per Ben, 11/23/26).
 // The Connect link disappears on its own after the last day.
-const HOLIDAY_SHOPPE_LAST_DAY = "2026-12-10";
+const HOLIDAY_SHOPPE_LAST_DAY = "2026-12-11";
 // Class shopping times, from the school's Holiday Shop sign-up sheet (11/22/26).
 // Keep in sync with holiday-shoppe.html and the form's class-time options.
 const HOLIDAY_SHOPPE_SCHEDULE = [
@@ -366,6 +367,9 @@ const HOLIDAY_SHOPPE_SCHEDULE = [
     ["1:40 p.m.", "Doherty", "Grade 4"],
     ["2:15 p.m.", "O'Donnell", "Grade 3"],
   ] },
+  { day: "Friday, December 11", classes: [
+    ["9:00 a.m.", "Make-up shopping until 12:00 p.m.", ""],
+  ] },
 ];
 
 function viewHolidayShoppe() {
@@ -376,7 +380,7 @@ function viewHolidayShoppe() {
       <img src="../img/tiger-holiday.png" alt="The Taylor Tiger in a Santa hat and scarf, holding a wrapped gift" style="display:block;width:110px;height:auto;margin:4px auto 10px">
       <h2 class="card-h" style="color:#ffffff;margin:0 0 6px">Holiday Shoppe</h2>
       <p class="small" style="margin:0 0 10px;color:rgba(255,255,255,0.85)">Kids shop on their own for small gifts for family, friends, teachers, even pets!</p>
-      <p class="small" style="margin:0;font-weight:700;color:#ffffff">December 9 &amp; 10 · During the school day</p>
+      <p class="small" style="margin:0;font-weight:700;color:#ffffff">December 9 &amp; 10 · During the school day<br>Make-up shopping Friday, Dec. 11</p>
     </div>
 
     <h2 class="section-h">How shopping works</h2>
@@ -391,11 +395,16 @@ function viewHolidayShoppe() {
     <p class="small" style="margin:0 2px 4px">Volunteers usually help during their child's class time, or right before or after.</p>
     ${HOLIDAY_SHOPPE_SCHEDULE.map((d) => `<div class="card" style="padding:4px 14px 6px">
       <p class="small" style="margin:8px 0 2px;font-weight:700;color:var(--heading)">${d.day}</p>
-      ${d.classes.map(([t, n, g], i) => row(t, `${esc(n)} · ${g}`, false)).join("")}
+      ${d.classes.map(([t, n, g], i) => row(t, `${esc(n)}${g ? " · " + g : ""}`, false)).join("")}
     </div>`).join("")}
 
     <h2 class="section-h">Help run the shoppe</h2>
-    <p class="small" style="margin:0 2px 4px">The shoppe is run entirely by parent volunteers. Pick the class times you can help and we'll follow up to confirm your shift.</p>
+    <p class="small" style="margin:0 2px 4px">The shoppe is run entirely by parent volunteers. Pick the times you can help and we'll follow up to confirm your shift.</p>
+    <div class="card" style="padding:4px 14px 6px">
+      ${row("Setup", "<strong>Tuesday, December 8</strong>, 3:30–5:30 p.m.", true)}
+      ${row("Shopping", "<strong>Wednesday and Thursday</strong> during the class times above")}
+      ${row("Make-up", "<strong>Friday, December 11</strong>, 9:00 a.m.–12:00 p.m.")}
+    </div>
     <div class="form-embed">
       <iframe src="${LINKS.holidayShoppeForm}?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
     </div>

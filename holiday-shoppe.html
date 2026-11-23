@@ -12,7 +12,7 @@
 <style>
   /* page-specific only: the embedded Google Form */
   .form-embed{background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:18px}
-  .form-embed iframe{display:block;width:100%;height:2400px;border:0}
+  .form-embed iframe{display:block;width:100%;height:2550px;border:0}
   .sched h3{margin:18px 0 0}
   .sched .ways{margin-top:8px}
   .sched .ways .label{flex-basis:92px}
@@ -22,10 +22,10 @@
 
 <!-- ══ HERO ═══════════════════════════════════════════════
      DATES VERIFIED 11/22/26 against the PTO Master Calendar
-     (ben@taylorpto.org): Holiday Shoppe listed Wed 12/9 – Fri 12/11/2026,
-     but Ben confirmed 11/23/26 the shoppe is NOT open Friday 12/11:
-     it runs Wednesday 12/9 and Thursday 12/10 only.
-     Envelope deadline Tuesday 12/8/2026.
+     (ben@taylorpto.org): Holiday Shoppe Wed 12/9 – Fri 12/11/2026.
+     Per Ben 11/23/26: classes shop Wed 12/9 and Thu 12/10; Friday 12/11
+     is make-up shopping, 9:00 a.m.–12:00 p.m.; setup is Tuesday 12/8,
+     3:30–5:30 p.m. Envelope deadline Tuesday 12/8/2026.
      ═══════════════════════════════════════════════════════ -->
 <div class="hero">
   <img src="https://taylorpto.github.io/website-widgets/img/tiger-holiday.png"
@@ -35,7 +35,7 @@
   <h1>Holiday Shoppe</h1>
   <p>Kids shop on their own for small gifts for family, friends,
      teachers, even pets!</p>
-  <p class="facts"><span>December 9 &amp; 10</span><span class="sep">·</span><span>During the school day</span></p>
+  <p class="facts"><span>December 9 &amp; 10</span><span class="sep">·</span><span>During the school day</span><span class="sep">·</span><span>Make-up shopping Friday, Dec. 11</span></p>
 </div>
 
 <!-- ══ DETAILS ════════════════════════════════════════════ -->
@@ -63,8 +63,8 @@
 
 <!-- ══ CLASS SCHEDULE ═════════════════════════════════════
      From the school's Holiday Shop sign-up sheet (photo from Ben,
-     11/22/26). 11:20 is open both days; Wed 1:05 is open. The
-     shoppe is not open Friday 12/11 (Ben, 11/23/26). Keep in sync with the
+     11/22/26). 11:20 is open both days; Wed 1:05 is open. Friday
+     12/11 is make-up shopping, 9:00 a.m.–12:00 p.m. (Ben, 11/23/26). Keep in sync with the
      form's class-time options and app/app.js.
      ═══════════════════════════════════════════════════════ -->
 <div class="section sched">
@@ -98,6 +98,12 @@
           <li><span class="label">2:15 p.m.</span><span>O'Donnell &middot; Grade 3</span></li>
         </ul>
       </div>
+      <div>
+        <h3>Friday, December 11</h3>
+        <ul class="ways">
+          <li><span class="label">9:00 a.m.</span><span>Make-up shopping until 12:00 p.m.</span></li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -107,8 +113,16 @@
   <div class="wrap">
     <p class="eyebrow on-light">Volunteer</p>
     <h2>Help run the shoppe</h2>
-    <p class="lead">The shoppe is run entirely by parent volunteers. Pick the class
-       times you can help and we'll follow up to confirm your shift.</p>
+    <p class="lead">The shoppe is run entirely by parent volunteers. Pick the times you
+       can help and we'll follow up to confirm your shift.</p>
+    <ul class="ways" style="margin-bottom:8px;">
+      <li><span class="label">Setup</span>
+          <span><strong>Tuesday, December 8</strong>, 3:30–5:30 p.m.</span></li>
+      <li><span class="label">Shopping</span>
+          <span><strong>Wednesday and Thursday</strong> during the class times above</span></li>
+      <li><span class="label">Make-up</span>
+          <span><strong>Friday, December 11</strong>, 9:00 a.m.–12:00 p.m.</span></li>
+    </ul>
     <div class="form-embed">
       <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScuHstFizmMCmbU3haXV2fD3eeHJrHBGmCMmmav5wEIrPmPWw/viewform?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
     </div>
