@@ -23,7 +23,7 @@ Hosted free on GitHub Pages at
 | `page-template.html` | Blank starting point for a new page. Copy it, rename it, replace the words. |
 | `trunk-or-treat.html` | Trunk or Treat event page. **Event dates live here** — see warning below. |
 | `purse-bingo.html` | Designer Purse Bingo event page (Nov 5, 2026). Date and ticket price live here. |
-| `holiday-shoppe.html` | Holiday Shoppe volunteer sign-up (Dec 9–11, 2026) with the Google Form embedded. Dates live here and in `app/app.js`. |
+| `holiday-shoppe.html` | Holiday Shoppe page (Dec 9–11, 2026): `theme-holiday-shoppe` header with the Santa-hat tiger, family details, and the volunteer Google Form. Dates live here and in `app/app.js`. |
 
 ---
 

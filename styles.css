@@ -292,3 +292,30 @@ body.theme-purse-bingo .cards{ grid-template-columns: repeat(auto-fit, minmax(13
 .hero .facts{ margin-top:14px; font-size:15px; font-weight:600; color: var(--white); }
 .hero .facts span{ white-space:nowrap; }
 .hero .facts .sep{ color: var(--gold); padding:0 8px; }
+
+
+
+/* ============================================================
+   SEASONAL THEME — Holiday Shoppe (December, matches the flyer)
+   Add class="theme-holiday-shoppe" to <body>
+   ============================================================ */
+body.theme-holiday-shoppe{
+  --navy:        #0F4D2E;   /* pine green replaces navy       */
+  --navy-deep:   #08311D;
+  --gold:        #D4A537;   /* warm holiday gold              */
+  --gold-deep:   #8A6416;   /* gold on light bg, contrast     */
+
+  --ink:         #4A4F45;
+  --muted:       #4A4F45;
+  --faint:       #8C8F84;
+  --cream:       #FBF6EC;
+  --tint:        #FBF6EC;
+  --rule:        #E9DFCB;
+}
+body.theme-holiday-shoppe .hero{ border-bottom-color: #C8102E; }   /* flyer red */
+body.theme-holiday-shoppe .hero .hs-mascot{
+  display:block; margin:0 auto 14px; width:150px; max-width:42%; height:auto;
+}
+@media (max-width:520px){
+  body.theme-holiday-shoppe .hero .hs-mascot{ width:110px; }
+}

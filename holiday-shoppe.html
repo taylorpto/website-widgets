@@ -3,37 +3,66 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Taylor PTO — Holiday Shoppe volunteers</title>
+<title>Holiday Shoppe — Taylor Elementary PTO</title>
+
+<!-- The shared stylesheet. Do not copy CSS into this file; edit
+     styles.css instead so every page stays in sync. -->
+<link rel="stylesheet" href="https://taylorpto.github.io/website-widgets/styles.css?v=4">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://taylorpto.github.io/website-widgets/styles.css">
 <style>
-  .form-embed{background:#fff;border:1px solid #E6E2DA;border-radius:12px;overflow:hidden;margin-top:18px}
+  /* page-specific only: the embedded Google Form */
+  .form-embed{background:#fff;border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:18px}
   .form-embed iframe{display:block;width:100%;height:2200px;border:0}
 </style>
 </head>
-<body>
+<body class="theme-holiday-shoppe">
 
-<!-- Holiday Shoppe dates come from the PTO Master Calendar (Wed Dec 9 – Fri Dec 11, 2026).
-     Check the calendar before changing them here. -->
+<!-- ══ HERO ═══════════════════════════════════════════════
+     DATES VERIFIED 11/22/26 against the PTO Master Calendar
+     (ben@taylorpto.org): Holiday Shoppe runs Wednesday 12/9 –
+     Friday 12/11/2026. Envelope deadline Tuesday 12/8/2026.
+     ═══════════════════════════════════════════════════════ -->
 <div class="hero">
+  <img src="https://taylorpto.github.io/website-widgets/img/tiger-holiday.png"
+       alt="The Taylor Tiger in a Santa hat and scarf, holding a wrapped gift"
+       class="hs-mascot">
   <p class="eyebrow">Taylor Elementary PTO</p>
-  <h1>Holiday Shoppe Volunteers</h1>
-  <p>Wednesday, December 9 through Friday, December 11. Help students pick out gifts for the people they love.</p>
+  <h1>Holiday Shoppe</h1>
+  <p>Kids shop on their own for small gifts for family, friends,
+     teachers, even pets!</p>
+  <p class="facts"><span>December 9, 10 &amp; 11</span><span class="sep">·</span><span>During the school day</span></p>
 </div>
 
+<!-- ══ DETAILS ════════════════════════════════════════════ -->
 <div class="section tinted">
-  <div class="wrap" style="text-align:center;">
-    <p class="eyebrow on-light">The Flyer</p>
-    <img src="img/holiday-shoppe-flyer-2026.png" alt="Holiday Shoppe 2026 flyer: December 9, 10 and 11, during the school day. Prices $0.25 to $15, most items $3 to $8. Cash only: an envelope and gift list come home with each student; send them back with cash by Tuesday, December 8. Bring a bag; gifts come home wrapped and tagged. Volunteers needed. Scholarships are available from Mr. G. at mrg@taylorpto.org." style="display:block;width:100%;max-width:560px;height:auto;margin:0 auto;border-radius:12px;">
-    <p style="margin-top:12px;"><a href="img/holiday-shoppe-flyer-2026.png" target="_blank" rel="noopener">Open the full-size flyer</a></p>
+  <div class="wrap">
+    <p class="eyebrow on-light">For families</p>
+    <h2>How shopping works</h2>
+    <ul class="ways">
+      <li><span class="label">Prices</span>
+          <span>$0.25 to $15, with most items $3 to $8</span></li>
+      <li><span class="label">Payment</span>
+          <span><strong>Cash only.</strong> An envelope and gift list come home with
+          each student. Send them back with cash by <strong>Tuesday, December 8</strong>.</span></li>
+      <li><span class="label">Bring</span>
+          <span>A shopping bag. Gifts come home wrapped and tagged.</span></li>
+    </ul>
+    <div class="callout">
+      <p><strong>Scholarships are available.</strong> Contact Mr. G. at
+         <a href="mailto:mrg@taylorpto.org" target="_blank" rel="noopener">mrg@taylorpto.org</a>.</p>
+    </div>
+    <p style="margin:0;"><a href="https://taylorpto.github.io/website-widgets/img/holiday-shoppe-flyer-2026.png"
+       target="_blank" rel="noopener">Download the flyer</a></p>
   </div>
 </div>
 
+<!-- ══ VOLUNTEER SIGN-UP ══════════════════════════════════ -->
 <div class="section">
   <div class="wrap">
-    <p class="eyebrow on-light">Sign Up</p>
-    <h2>Pick the days that work for you</h2>
-    <p class="lead">The shoppe is run entirely by parent volunteers. Tell us when you're free and we'll follow up with your shift.</p>
+    <p class="eyebrow on-light">Volunteer</p>
+    <h2>Help run the shoppe</h2>
+    <p class="lead">The shoppe is run entirely by parent volunteers. Pick the days and
+       times that work for you and we'll follow up with your shift.</p>
     <div class="form-embed">
       <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScuHstFizmMCmbU3haXV2fD3eeHJrHBGmCMmmav5wEIrPmPWw/viewform?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
     </div>
@@ -41,6 +70,7 @@
   </div>
 </div>
 
+<!-- ══ FOOTER ══ Keep this on every page. ═════════════════ -->
 <div class="pto-foot">
   <p class="small">Questions? Email
      <a href="mailto:board@taylorpto.org" target="_blank" rel="noopener"><strong>board@taylorpto.org</strong></a></p>
