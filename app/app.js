@@ -346,19 +346,30 @@ function viewConnect() {
 const HOLIDAY_SHOPPE_LAST_DAY = "2026-12-11";
 
 function viewHolidayShoppe() {
+  // Same header and details as the website page (holiday-shoppe.html).
+  const row = (label, text, first) => `<div style="display:flex;gap:12px;padding:10px 0;${first ? "" : "border-top:1px solid var(--rule)"}"><span class="small" style="flex:0 0 70px;margin:0;font-weight:700;color:var(--heading)">${label}</span><span class="small" style="margin:0">${text}</span></div>`;
   return `
-    <div class="card">
-      <p class="section-h" style="margin:0 0 6px">Volunteer</p>
-      <h2 class="card-h">Holiday Shoppe · Dec 9–11</h2>
-      <p class="small" style="margin:0">Students shop for gifts during the school day, and parent volunteers run the shoppe. Pick the days and times that work and we'll follow up with your shift.</p>
+    <div class="card" style="text-align:center;background:#0F4D2E;border-bottom:4px solid #C8102E;color:#ffffff">
+      <img src="../img/tiger-holiday.png" alt="The Taylor Tiger in a Santa hat and scarf, holding a wrapped gift" style="display:block;width:110px;height:auto;margin:4px auto 10px">
+      <h2 class="card-h" style="color:#ffffff;margin:0 0 6px">Holiday Shoppe</h2>
+      <p class="small" style="margin:0 0 10px;color:rgba(255,255,255,0.85)">Kids shop on their own for small gifts for family, friends, teachers, even pets!</p>
+      <p class="small" style="margin:0;font-weight:700;color:#ffffff">December 9, 10 &amp; 11 · During the school day</p>
     </div>
-    <div class="card" style="padding:8px">
-      <img src="../img/holiday-shoppe-flyer-2026.png" alt="Holiday Shoppe 2026 flyer: December 9, 10 and 11, during the school day. Prices $0.25 to $15, most items $3 to $8. Cash only: an envelope and gift list come home with each student; send them back with cash by Tuesday, December 8. Bring a bag; gifts come home wrapped and tagged. Volunteers needed. Scholarships are available from Mr. G. at mrg@taylorpto.org." style="display:block;width:100%;height:auto;border-radius:8px" loading="lazy">
+
+    <h2 class="section-h">How shopping works</h2>
+    <div class="card" style="padding:4px 14px 6px">
+      ${row("Prices", "$0.25 to $15, with most items $3 to $8", true)}
+      ${row("Payment", "<strong>Cash only.</strong> An envelope and gift list come home with each student. Send them back with cash by <strong>Tuesday, December 8</strong>.")}
+      ${row("Bring", "A shopping bag. Gifts come home wrapped and tagged.")}
+      <p class="small" style="margin:0;padding:10px 0 4px;border-top:1px solid var(--rule)"><strong>Scholarships are available.</strong> Contact Mr. G. at <a href="mailto:mrg@taylorpto.org">mrg@taylorpto.org</a>.</p>
     </div>
+
+    <h2 class="section-h">Help run the shoppe</h2>
+    <p class="small" style="margin:0 2px 4px">The shoppe is run entirely by parent volunteers. Pick the days and times that work and we'll follow up with your shift.</p>
     <div class="form-embed">
       <iframe src="${LINKS.holidayShoppeForm}?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
     </div>
-    <p class="fine" style="text-align:center;margin-top:12px">Form not showing? <a href="${LINKS.holidayShoppeForm}" target="_blank" rel="noopener">Open it in your browser</a> · <a href="#connect">Back to Connect</a></p>
+    <p class="fine" style="text-align:center;margin-top:12px">Form not showing? <a href="${LINKS.holidayShoppeForm}" target="_blank" rel="noopener">Open it in your browser</a> · <a href="../img/holiday-shoppe-flyer-2026.png" target="_blank" rel="noopener">Flyer</a> · <a href="#connect">Back to Connect</a></p>
   `;
 }
 
