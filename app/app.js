@@ -342,7 +342,7 @@ function viewConnect() {
 }
 
 // Holiday Shoppe volunteer sign-up: setup Tue 12/8 3:30–5:30, classes shop Wed 12/9 + Thu 12/10,
-// make-up shopping Fri 12/11 9:00–12:00 (per Ben, 11/23/26).
+// make-up shopping Fri 12/11 9:00–12:00, pack-up Fri 12/11 at noon (per Ben, 11/23/26).
 // The Connect link disappears on its own after the last day.
 const HOLIDAY_SHOPPE_LAST_DAY = "2026-12-11";
 // Class shopping times, from the school's Holiday Shop sign-up sheet (11/22/26).
@@ -404,6 +404,7 @@ function viewHolidayShoppe() {
       ${row("Setup", "<strong>Tuesday, December 8</strong>, 3:30–5:30 p.m.", true)}
       ${row("Shopping", "<strong>Wednesday and Thursday</strong> during the class times above")}
       ${row("Make-up", "<strong>Friday, December 11</strong>, 9:00 a.m.–12:00 p.m.")}
+      ${row("Pack-up", "<strong>Friday, December 11</strong>, starting at 12:00 p.m.")}
     </div>
     <div class="form-embed">
       <iframe src="${LINKS.holidayShoppeForm}?embedded=true" title="Holiday Shoppe volunteer sign-up form" loading="lazy">Loading…</iframe>
